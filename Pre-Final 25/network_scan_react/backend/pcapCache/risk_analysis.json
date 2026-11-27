@@ -1,0 +1,129 @@
+{
+    "status": "SUCCESS",
+    "generated": "02-Aug-2026 11:17:18",
+    "generatedISO": "2026-08-02T11:17:18.333570",
+    "riskScore": 50,
+    "riskLevel": "HIGH",
+    "recommendations": [
+        "High ARP activity detected.",
+        "DNS traffic is unusually high.",
+        "Network throughput is above threshold."
+    ],
+    "recommendationCount": 3,
+    "totalPackets": 11196058,
+    "packetRate": 11196058.0,
+    "throughput": 66161.27,
+    "uploadDownloadRatio": {
+        "upload": 29.6,
+        "download": 70.4,
+        "uploadBytes": 2450944565,
+        "downloadBytes": 5819214446
+    },
+    "protocols": {
+        "ARP": 541012,
+        "NBNS": 39013,
+        "TLS": 730111,
+        "TCP": 2882101,
+        "SSDP": 215887,
+        "MDNS": 436245,
+        "OTHER": 2264155,
+        "DNS": 382582,
+        "LLMNR": 99268,
+        "MAILSLOT": 7659,
+        "DB-LSP-DISC": 11068,
+        "TCP.SEGMENTS": 155952,
+        "DHCP": 5378,
+        "ICMPV6": 262011,
+        "XML": 9998,
+        "QUIC": 2775596,
+        "HTTP": 4523,
+        "STEAM_IHS_DISCOVERY": 88,
+        "ICMP": 3056,
+        "IGMP": 23895,
+        "DATA-TEXT-LINES": 785,
+        "MSDO": 514,
+        "XMPP": 25,
+        "DUPLICATE IP ADDRESS DETECTED FOR 10.20.0.57 (04:68:74:BA:5C:F7) - ALSO IN USE BY 9A:F1:FC:B7:94:87 (FRAME 2401)": 1,
+        "NTP": 48,
+        "WSP": 15,
+        "_WS.MALFORMED": 14254,
+        "OCSP": 58,
+        "SNMP": 1336,
+        "DHCPV6": 1940,
+        "DUPLICATE IP ADDRESS DETECTED FOR 10.20.0.103 (80:38:FB:FE:2A:0E) - ALSO IN USE BY 58:6C:25:21:F6:EC (FRAME 767)": 6,
+        "MP2T": 6,
+        "DUPLICATE IP ADDRESS DETECTED FOR 10.20.0.195 (2C:DB:07:68:F6:64) - ALSO IN USE BY 28:7F:CF:F3:AB:B0 (FRAME 18950)": 2,
+        "STP": 279193,
+        "IEEE1905": 22913,
+        "LLDP": 9302,
+        "WLCCP": 634,
+        "BASICXID": 676,
+        "WLAN.TAGGED.ALL": 18,
+        "CERTIFICATE REVOCATION LIST": 12,
+        "STUN": 2988,
+        "DTLS": 131,
+        "RTCP": 10541,
+        "_WS.DISSECTOR_BUG": 6,
+        "PRP": 15,
+        "SMB": 3,
+        "NBSS": 65,
+        "DCERPC": 3,
+        "ELASTICSEARCH": 1,
+        "NAT-PMP": 8,
+        "TPLINK-SMARTHOME": 518,
+        "RTSP": 441,
+        "PORTMAP": 2
+    },
+    "topTalkers": [
+        {
+            "ip": "Unknown",
+            "packets": 855256,
+            "bytes": 48601782
+        },
+        {
+            "ip": "10.20.0.90",
+            "packets": 224729,
+            "bytes": 69687907
+        },
+        {
+            "ip": "2405:200:1608:1731::312c:7108",
+            "packets": 173265,
+            "bytes": 250467663
+        },
+        {
+            "ip": "49.249.29.228",
+            "packets": 143327,
+            "bytes": 182373696
+        },
+        {
+            "ip": "2405:204:5709:123b:10c:a1f6:390c:afdf",
+            "packets": 140846,
+            "bytes": 139549014
+        },
+        {
+            "ip": "23.193.56.34",
+            "packets": 70211,
+            "bytes": 99925498
+        },
+        {
+            "ip": "2a03:90c0:f1:2801::9999",
+            "packets": 61180,
+            "bytes": 86227313
+        },
+        {
+            "ip": "74.224.107.133",
+            "packets": 60172,
+            "bytes": 84407247
+        },
+        {
+            "ip": "49.44.80.208",
+            "packets": 54212,
+            "bytes": 70327521
+        },
+        {
+            "ip": "2405:200:1608:2934::c",
+            "packets": 54180,
+            "bytes": 69546424
+        }
+    ]
+}
