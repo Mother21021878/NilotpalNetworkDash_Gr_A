@@ -1,0 +1,722 @@
+{
+    "analysisMode": "Historical",
+    "pcapFilesAnalysed": 1,
+    "oldestCapture": "Wi-Fi_20260808_104600.pcapng",
+    "newestCapture": "Wi-Fi_20260808_104600.pcapng",
+    "captureDuration": 177.15,
+    "peakTrafficPackets": 1413,
+    "totalPackets": 22601,
+    "totalBytes": 19577539,
+    "protocols": {
+        "DNS": 958,
+        "OTHER": 2647,
+        "TCP": 8619,
+        "QUIC": 4154,
+        "ARP": 170,
+        "ICMPV6": 442,
+        "STP": 720,
+        "TLS": 3303,
+        "TCP.SEGMENTS": 510,
+        "_WS.MALFORMED": 60,
+        "SSDP": 363,
+        "IEEE1905": 48,
+        "LLDP": 24,
+        "IGMP": 49,
+        "LLMNR": 142,
+        "HTTP": 3,
+        "XML": 14,
+        "MDNS": 320,
+        "DATA-TEXT-LINES": 2,
+        "MAILSLOT": 2,
+        "DHCPV6": 2,
+        "NBNS": 48,
+        "PRP": 1
+    },
+    "topSourcePorts": [
+        {
+            "port": "443",
+            "packets": 414
+        },
+        {
+            "port": "5353",
+            "packets": 192
+        },
+        {
+            "port": "53",
+            "packets": 73
+        },
+        {
+            "port": "48412",
+            "packets": 50
+        },
+        {
+            "port": "137",
+            "packets": 24
+        },
+        {
+            "port": "59137",
+            "packets": 24
+        },
+        {
+            "port": "61680",
+            "packets": 22
+        },
+        {
+            "port": "14839",
+            "packets": 20
+        },
+        {
+            "port": "61113",
+            "packets": 17
+        },
+        {
+            "port": "14747",
+            "packets": 16
+        },
+        {
+            "port": "42827",
+            "packets": 14
+        },
+        {
+            "port": "55151",
+            "packets": 14
+        },
+        {
+            "port": "57872",
+            "packets": 13
+        },
+        {
+            "port": "65362",
+            "packets": 13
+        },
+        {
+            "port": "42830",
+            "packets": 13
+        },
+        {
+            "port": "54649",
+            "packets": 13
+        },
+        {
+            "port": "58154",
+            "packets": 12
+        },
+        {
+            "port": "30628",
+            "packets": 12
+        },
+        {
+            "port": "62183",
+            "packets": 11
+        },
+        {
+            "port": "56200",
+            "packets": 11
+        }
+    ],
+    "topDestinationPorts": [
+        {
+            "port": "443",
+            "packets": 315
+        },
+        {
+            "port": "5353",
+            "packets": 192
+        },
+        {
+            "port": "53",
+            "packets": 73
+        },
+        {
+            "port": "5355",
+            "packets": 68
+        },
+        {
+            "port": "1900",
+            "packets": 50
+        },
+        {
+            "port": "14839",
+            "packets": 42
+        },
+        {
+            "port": "137",
+            "packets": 24
+        },
+        {
+            "port": "59137",
+            "packets": 24
+        },
+        {
+            "port": "61113",
+            "packets": 20
+        },
+        {
+            "port": "14747",
+            "packets": 19
+        },
+        {
+            "port": "55151",
+            "packets": 19
+        },
+        {
+            "port": "38142",
+            "packets": 19
+        },
+        {
+            "port": "61680",
+            "packets": 18
+        },
+        {
+            "port": "58154",
+            "packets": 18
+        },
+        {
+            "port": "65362",
+            "packets": 17
+        },
+        {
+            "port": "62183",
+            "packets": 16
+        },
+        {
+            "port": "56200",
+            "packets": 16
+        },
+        {
+            "port": "57584",
+            "packets": 16
+        },
+        {
+            "port": "54649",
+            "packets": 16
+        },
+        {
+            "port": "42827",
+            "packets": 15
+        }
+    ],
+    "topTalkers": [
+        {
+            "ip": "192.168.0.152",
+            "hostname": "-",
+            "packetCount": 4290,
+            "packets": 4290,
+            "bytes": 11451826,
+            "percentage": 18.98
+        },
+        {
+            "ip": "20.199.39.224",
+            "hostname": "-",
+            "packetCount": 3122,
+            "packets": 3122,
+            "bytes": 376696,
+            "percentage": 13.81
+        },
+        {
+            "ip": "142.251.152.119",
+            "hostname": "-",
+            "packetCount": 1659,
+            "packets": 1659,
+            "bytes": 1592427,
+            "percentage": 7.34
+        },
+        {
+            "ip": "2405:204:560b:5574:301e:3083:fc:d6b2",
+            "hostname": "-",
+            "packetCount": 1602,
+            "packets": 1602,
+            "bytes": 808945,
+            "percentage": 7.09
+        },
+        {
+            "ip": "4.150.223.114",
+            "hostname": "-",
+            "packetCount": 1430,
+            "packets": 1430,
+            "bytes": 116950,
+            "percentage": 6.33
+        },
+        {
+            "ip": "Unknown",
+            "hostname": "-",
+            "packetCount": 962,
+            "packets": 962,
+            "bytes": 57074,
+            "percentage": 4.26
+        },
+        {
+            "ip": "2001:4860:482d:7700::",
+            "hostname": "-",
+            "packetCount": 778,
+            "packets": 778,
+            "bytes": 980879,
+            "percentage": 3.44
+        },
+        {
+            "ip": "140.82.113.22",
+            "hostname": "-",
+            "packetCount": 526,
+            "packets": 526,
+            "bytes": 91951,
+            "percentage": 2.33
+        },
+        {
+            "ip": "99.86.182.66",
+            "hostname": "-",
+            "packetCount": 451,
+            "packets": 451,
+            "bytes": 623913,
+            "percentage": 2.0
+        },
+        {
+            "ip": "2a03:2880:f354:120:face:b00c:0:167",
+            "hostname": "-",
+            "packetCount": 343,
+            "packets": 343,
+            "bytes": 244927,
+            "percentage": 1.52
+        }
+    ],
+    "topReceivers": [
+        {
+            "ip": "192.168.0.152",
+            "hostname": "-",
+            "packetCount": 9852,
+            "packets": 9852,
+            "bytes": 3656358,
+            "percentage": 43.59
+        },
+        {
+            "ip": "2405:204:560b:5574:301e:3083:fc:d6b2",
+            "hostname": "-",
+            "packetCount": 3204,
+            "packets": 3204,
+            "bytes": 2899992,
+            "percentage": 14.18
+        },
+        {
+            "ip": "20.199.39.224",
+            "hostname": "-",
+            "packetCount": 996,
+            "packets": 996,
+            "bytes": 5405366,
+            "percentage": 4.41
+        },
+        {
+            "ip": "Unknown",
+            "hostname": "-",
+            "packetCount": 962,
+            "packets": 962,
+            "bytes": 57074,
+            "percentage": 4.26
+        },
+        {
+            "ip": "142.251.152.119",
+            "hostname": "-",
+            "packetCount": 607,
+            "packets": 607,
+            "bytes": 179479,
+            "percentage": 2.69
+        },
+        {
+            "ip": "fd38:4aa0:573b::1",
+            "hostname": "-",
+            "packetCount": 449,
+            "packets": 449,
+            "bytes": 45418,
+            "percentage": 1.99
+        },
+        {
+            "ip": "2405:204:560b:5574:20f9:7b5:bbcb:7b9d",
+            "hostname": "-",
+            "packetCount": 414,
+            "packets": 414,
+            "bytes": 167055,
+            "percentage": 1.83
+        },
+        {
+            "ip": "4.150.223.114",
+            "hostname": "-",
+            "packetCount": 405,
+            "packets": 405,
+            "bytes": 2320149,
+            "percentage": 1.79
+        },
+        {
+            "ip": "fd38:4aa0:573b:0:301e:3083:fc:d6b2",
+            "hostname": "-",
+            "packetCount": 391,
+            "packets": 391,
+            "bytes": 68942,
+            "percentage": 1.73
+        },
+        {
+            "ip": "239.255.255.250",
+            "hostname": "-",
+            "packetCount": 316,
+            "packets": 316,
+            "bytes": 139330,
+            "percentage": 1.4
+        }
+    ],
+    "connectionMatrix": [
+        {
+            "source": "2001:4860:4827:7700::",
+            "destination": "2405:204:560b:5574:20f9:7b5:bbcb:7b9d",
+            "packets": 58,
+            "bytes": 20752
+        },
+        {
+            "source": "fd38:4aa0:573b:0:20f9:7b5:bbcb:7b9d",
+            "destination": "fd38:4aa0:573b::1",
+            "packets": 58,
+            "bytes": 5770
+        },
+        {
+            "source": "fd38:4aa0:573b::1",
+            "destination": "fd38:4aa0:573b:0:20f9:7b5:bbcb:7b9d",
+            "packets": 58,
+            "bytes": 10979
+        },
+        {
+            "source": "2405:204:560b:5574:20f9:7b5:bbcb:7b9d",
+            "destination": "2001:4860:4827:7700::",
+            "packets": 57,
+            "bytes": 34451
+        },
+        {
+            "source": "192.168.0.1",
+            "destination": "239.255.255.250",
+            "packets": 50,
+            "bytes": 22155
+        },
+        {
+            "source": "2404:6800:4007:832::2005",
+            "destination": "2405:204:560b:5574:20f9:7b5:bbcb:7b9d",
+            "packets": 49,
+            "bytes": 16841
+        },
+        {
+            "source": "192.168.0.221",
+            "destination": "224.0.0.251",
+            "packets": 48,
+            "bytes": 3360
+        },
+        {
+            "source": "fe80::9c03:d047:2c98:afc6",
+            "destination": "ff02::fb",
+            "packets": 48,
+            "bytes": 4320
+        },
+        {
+            "source": "192.168.0.152",
+            "destination": "224.0.0.251",
+            "packets": 48,
+            "bytes": 3360
+        },
+        {
+            "source": "fe80::c2bd:74ac:7d33:aa72",
+            "destination": "ff02::fb",
+            "packets": 48,
+            "bytes": 4320
+        },
+        {
+            "source": "2404:6800:4007:83f::2003",
+            "destination": "2405:204:560b:5574:20f9:7b5:bbcb:7b9d",
+            "packets": 46,
+            "bytes": 18255
+        },
+        {
+            "source": "2606:4700:8dd2:7db9:4edd:b9:5ff2:75c4",
+            "destination": "2405:204:560b:5574:20f9:7b5:bbcb:7b9d",
+            "packets": 42,
+            "bytes": 7049
+        },
+        {
+            "source": "2405:204:560b:5574:20f9:7b5:bbcb:7b9d",
+            "destination": "2404:6800:4007:832::2005",
+            "packets": 42,
+            "bytes": 19276
+        },
+        {
+            "source": "2404:6800:4007:83a::200e",
+            "destination": "2405:204:560b:5574:20f9:7b5:bbcb:7b9d",
+            "packets": 37,
+            "bytes": 15860
+        },
+        {
+            "source": "Unknown",
+            "destination": "Unknown",
+            "packets": 35,
+            "bytes": 1730
+        },
+        {
+            "source": "2405:204:560b:5574:20f9:7b5:bbcb:7b9d",
+            "destination": "2404:6800:4007:83f::2003",
+            "packets": 31,
+            "bytes": 14959
+        },
+        {
+            "source": "2405:204:560b:5574:20f9:7b5:bbcb:7b9d",
+            "destination": "2404:6800:4007:83a::200e",
+            "packets": 30,
+            "bytes": 17415
+        },
+        {
+            "source": "2405:200:1608:1731::312c:7112",
+            "destination": "2405:204:560b:5574:20f9:7b5:bbcb:7b9d",
+            "packets": 23,
+            "bytes": 19002
+        },
+        {
+            "source": "192.168.0.221",
+            "destination": "192.168.0.1",
+            "packets": 21,
+            "bytes": 1778
+        },
+        {
+            "source": "192.168.0.1",
+            "destination": "192.168.0.221",
+            "packets": 21,
+            "bytes": 4666
+        }
+    ],
+    "topConversations": [
+        {
+            "endpointA": "fd38:4aa0:573b:0:20f9:7b5:bbcb:7b9d",
+            "endpointB": "fd38:4aa0:573b::1",
+            "packets": 116,
+            "bytes": 16749,
+            "averagePacketSize": 144.39,
+            "protocol": "DNS",
+            "topPort": "53",
+            "trafficPercent": 0.51
+        },
+        {
+            "endpointA": "2001:4860:4827:7700::",
+            "endpointB": "2405:204:560b:5574:20f9:7b5:bbcb:7b9d",
+            "packets": 115,
+            "bytes": 55203,
+            "averagePacketSize": 480.03,
+            "protocol": "QUIC",
+            "topPort": "443",
+            "trafficPercent": 0.51
+        },
+        {
+            "endpointA": "2404:6800:4007:832::2005",
+            "endpointB": "2405:204:560b:5574:20f9:7b5:bbcb:7b9d",
+            "packets": 91,
+            "bytes": 36117,
+            "averagePacketSize": 396.89,
+            "protocol": "TLS",
+            "topPort": "443",
+            "trafficPercent": 0.4
+        },
+        {
+            "endpointA": "2404:6800:4007:83f::2003",
+            "endpointB": "2405:204:560b:5574:20f9:7b5:bbcb:7b9d",
+            "packets": 77,
+            "bytes": 33214,
+            "averagePacketSize": 431.35,
+            "protocol": "QUIC",
+            "topPort": "443",
+            "trafficPercent": 0.34
+        },
+        {
+            "endpointA": "2404:6800:4007:83a::200e",
+            "endpointB": "2405:204:560b:5574:20f9:7b5:bbcb:7b9d",
+            "packets": 67,
+            "bytes": 33275,
+            "averagePacketSize": 496.64,
+            "protocol": "QUIC",
+            "topPort": "443",
+            "trafficPercent": 0.3
+        },
+        {
+            "endpointA": "2405:204:560b:5574:20f9:7b5:bbcb:7b9d",
+            "endpointB": "2606:4700:8dd2:7db9:4edd:b9:5ff2:75c4",
+            "packets": 62,
+            "bytes": 44300,
+            "averagePacketSize": 714.52,
+            "protocol": "TCP",
+            "topPort": "14839",
+            "trafficPercent": 0.27
+        },
+        {
+            "endpointA": "192.168.0.1",
+            "endpointB": "239.255.255.250",
+            "packets": 50,
+            "bytes": 22155,
+            "averagePacketSize": 443.1,
+            "protocol": "SSDP",
+            "topPort": "1900",
+            "trafficPercent": 0.22
+        },
+        {
+            "endpointA": "192.168.0.221",
+            "endpointB": "224.0.0.251",
+            "packets": 48,
+            "bytes": 3360,
+            "averagePacketSize": 70.0,
+            "protocol": "MDNS",
+            "topPort": "5353",
+            "trafficPercent": 0.21
+        },
+        {
+            "endpointA": "fe80::9c03:d047:2c98:afc6",
+            "endpointB": "ff02::fb",
+            "packets": 48,
+            "bytes": 4320,
+            "averagePacketSize": 90.0,
+            "protocol": "MDNS",
+            "topPort": "5353",
+            "trafficPercent": 0.21
+        },
+        {
+            "endpointA": "192.168.0.152",
+            "endpointB": "224.0.0.251",
+            "packets": 48,
+            "bytes": 3360,
+            "averagePacketSize": 70.0,
+            "protocol": "MDNS",
+            "topPort": "5353",
+            "trafficPercent": 0.21
+        },
+        {
+            "endpointA": "fe80::c2bd:74ac:7d33:aa72",
+            "endpointB": "ff02::fb",
+            "packets": 48,
+            "bytes": 4320,
+            "averagePacketSize": 90.0,
+            "protocol": "MDNS",
+            "topPort": "5353",
+            "trafficPercent": 0.21
+        },
+        {
+            "endpointA": "2405:200:1608:1731::312c:7112",
+            "endpointB": "2405:204:560b:5574:20f9:7b5:bbcb:7b9d",
+            "packets": 43,
+            "bytes": 22324,
+            "averagePacketSize": 519.16,
+            "protocol": "TCP",
+            "topPort": "443",
+            "trafficPercent": 0.19
+        },
+        {
+            "endpointA": "192.168.0.1",
+            "endpointB": "192.168.0.221",
+            "packets": 42,
+            "bytes": 6444,
+            "averagePacketSize": 153.43,
+            "protocol": "DNS",
+            "topPort": "53",
+            "trafficPercent": 0.19
+        },
+        {
+            "endpointA": "2404:6800:4007:805::200a",
+            "endpointB": "2405:204:560b:5574:20f9:7b5:bbcb:7b9d",
+            "packets": 33,
+            "bytes": 17518,
+            "averagePacketSize": 530.85,
+            "protocol": "QUIC",
+            "topPort": "55151",
+            "trafficPercent": 0.15
+        },
+        {
+            "endpointA": "2404:6800:4000:1025::54",
+            "endpointB": "2405:204:560b:5574:20f9:7b5:bbcb:7b9d",
+            "packets": 29,
+            "bytes": 14269,
+            "averagePacketSize": 492.03,
+            "protocol": "QUIC",
+            "topPort": "54649",
+            "trafficPercent": 0.13
+        },
+        {
+            "endpointA": "2405:204:560b:5574:20f9:7b5:bbcb:7b9d",
+            "endpointB": "2606:4700:83b2:7db9:52dd:5b:5ff2:75c4",
+            "packets": 28,
+            "bytes": 28962,
+            "averagePacketSize": 1034.36,
+            "protocol": "TCP",
+            "topPort": "38142",
+            "trafficPercent": 0.12
+        },
+        {
+            "endpointA": "2404:6800:4007:80c::200e",
+            "endpointB": "2405:204:560b:5574:20f9:7b5:bbcb:7b9d",
+            "packets": 27,
+            "bytes": 13704,
+            "averagePacketSize": 507.56,
+            "protocol": "QUIC",
+            "topPort": "57584",
+            "trafficPercent": 0.12
+        },
+        {
+            "endpointA": "2405:204:560b:5574:20f9:7b5:bbcb:7b9d",
+            "endpointB": "2606:4700:83b1:7b21:50dd:5b:b4d8:d1e5",
+            "packets": 25,
+            "bytes": 12256,
+            "averagePacketSize": 490.24,
+            "protocol": "QUIC",
+            "topPort": "443",
+            "trafficPercent": 0.11
+        },
+        {
+            "endpointA": "2404:6800:4007:83c::200e",
+            "endpointB": "2405:204:560b:5574:20f9:7b5:bbcb:7b9d",
+            "packets": 24,
+            "bytes": 11623,
+            "averagePacketSize": 484.29,
+            "protocol": "QUIC",
+            "topPort": "65020",
+            "trafficPercent": 0.11
+        },
+        {
+            "endpointA": "2001:4860:4844:400::",
+            "endpointB": "2405:204:560b:5574:20f9:7b5:bbcb:7b9d",
+            "packets": 24,
+            "bytes": 11697,
+            "averagePacketSize": 487.38,
+            "protocol": "QUIC",
+            "topPort": "49166",
+            "trafficPercent": 0.11
+        }
+    ],
+    "internalExternalTraffic": {
+        "internalInternal": {
+            "packets": 1329,
+            "bytes": 187021
+        },
+        "internalExternal": {
+            "packets": 4979,
+            "bytes": 11623871
+        },
+        "externalInternal": {
+            "packets": 9816,
+            "bytes": 3632068
+        },
+        "externalExternal": {
+            "packets": 5515,
+            "bytes": 4077505
+        }
+    },
+    "averagePacketSize": 866.22,
+    "largestPacket": 32934,
+    "smallestPacket": 42,
+    "packetRate": 127.58,
+    "throughputMbps": 0.88,
+    "peakTrafficTime": "08-Aug-2026 04:56:56",
+    "uploadDownloadRatio": {
+        "upload": 59.8,
+        "download": 40.2,
+        "uploadBytes": 11671934,
+        "downloadBytes": 7848531
+    },
+    "analysisGeneratedAt": "08-Aug-2026 10:49:02",
+    "analysisExecutionTime": 1.32,
+    "processedFiles": 1,
+    "skippedFiles": 0,
+    "lastAnalysedFile": "Wi-Fi_20260808_104600.pcapng"
+}
