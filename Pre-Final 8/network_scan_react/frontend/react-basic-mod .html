@@ -1,0 +1,2160 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Network Scan</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="js-container"></div>
+
+    <script src="https://unpkg.com/supersimpledev/react.js"></script>
+    <script src="https://unpkg.com/supersimpledev/react-dom.js"></script>
+    <script src="https://unpkg.com/supersimpledev/babel.js"></script>
+
+    <script type="text/babel">
+
+        function getProtocolColor(protocol) {
+
+            switch ((protocol || "").toUpperCase()) {
+                case "TCP": return "#1565C0";
+                case "UDP": return "#2E7D32";
+                case "ICMP": return "#EF6C00";
+                case "ARP": return "#8E24AA";
+                case "HTTP": return "#795548";
+                case "HTTPS": return "#00695C";
+                case "DNS": return "#00897B";
+                default: return "#616161";
+            }
+        }
+
+        const PacketTable = React.memo(function PacketTable({
+
+            filteredPackets,
+            selectedPacket,
+            setSelectedPacket,
+            setSelectedWSPacket,
+            setPacketAIResult,
+            setPacketAIError,
+            setPacketAILoading
+
+        }) {
+
+            return (
+
+                <table className="device-table">
+                    <thead className="table-header">
+                        <tr>
+                            <th>Sl.</th>
+                            <th>Time</th>
+                            <th>Pkt. ID</th>
+                            <th>Interface</th>
+                            <th>Source</th>
+                            <th>S-Port</th>
+                            <th>Destination</th>
+                            <th>D-Port</th>
+                            <th>Protocol</th>
+                            <th>Length</th>
+                            <th>Risk</th>
+                            <th>Flags</th>
+                            <th>Info</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        {filteredPackets.map((packet, index) => (
+                            <tr
+                                /*
+                                key={`${packet.time}-${packet.source}-${packet.destination}`}
+                                key={index}
+                                */
+                                key={`${packet.id}-${index}`}
+                                onClick={() => {
+                                    setSelectedPacket(packet);
+                                    setSelectedWSPacket(packet);
+                                    setPacketAIResult(null);
+                                    setPacketAIError("");
+                                    setPacketAILoading(false);
+                                }}
+                                style={{
+                                    cursor: "pointer",
+                                    backgroundColor:
+                                        selectedPacket === packet
+                                            ? "#dbeafe"
+                                            : "white"
+                                }}
+                            >
+
+                                <td>{index + 1}</td>
+                                <td>{packet.time}</td>
+                                <td>{packet.id}</td>
+                                <td>{packet.interface}</td>
+                                <td>{packet.source}</td>
+                                <td>{packet.sourcePort}</td>
+                                <td>{packet.destination}</td>
+                                <td>{packet.destinationPort}</td>
+
+                                <td
+                                    style={{
+                                        color: getProtocolColor(packet.protocol),
+                                        fontWeight: "bold"
+                                    }}
+                                >
+                                    {packet.protocol}
+                                </td>
+
+                                <td>{packet.length}</td>
+                                <td style={{ textAlign: "center", verticalAlign: "middle" }}>
+                                    <span style={{
+                                        display: "inline-block", minWidth: "72px", padding: "4px 12px", borderRadius: "14px", fontSize: "13px", fontWeight: "700",
+                                        color: "#FFFFFF",
+                                        background:
+                                            packet.riskLevel === "Critical"
+                                                ? "#C62828"
+                                                : packet.riskLevel === "High"
+                                                    ? "#EF6C00"
+                                                    : packet.riskLevel === "Medium"
+                                                        ? "#FBC02D"
+                                                        : "#43A047"
+                                    }}>{packet.riskLevel || "Low"}</span>
+                                </td>
+
+                                <td style={{ textAlign: "center", verticalAlign: "middle" }}>
+                                    <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: "4px" }}>
+                                        <div style={{ width: "100px", height: "12px", fontWeight: "600", background: "#ddd", borderRadius: "8px", overflow: "hidden" }}>
+                                            <div style={{
+                                                width: `${packet.riskScore || 0}%`, height: "100%", backgroundColor:
+                                                    packet.riskScore >= 80 ? "#d32f2f"
+                                                        : packet.riskScore >= 60 ? "#f57c00"
+                                                            : packet.riskScore >= 40 ? "#fbc02d"
+                                                                : "#43a047"
+                                            }} />
+                                        </div>
+                                        <span style={{
+                                            fontSize: "13px", fontWeight: "700",
+                                            color:
+                                                packet.riskScore >= 80
+                                                    ? "#C62828"
+                                                    : packet.riskScore >= 60
+                                                        ? "#EF6C00"
+                                                        : packet.riskScore >= 40
+                                                            ? "#F9A825"
+                                                            : "#2E7D32"
+                                        }}>{packet.riskScore || 0}/100</span>
+                                    </div>
+                                </td>
+                                <td>{packet.info}</td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            );
+        });
+
+        const DeviceTable = React.memo(function DeviceTable({
+
+            sortedDevices,
+            handleView,
+            scanning,
+            refreshing
+
+        }) {
+
+            return (
+                <tbody>
+                    {sortedDevices.map((device, index) => (
+                        <tr key={`${device.ip}-${device.mac}-${device.endpointId}`}>
+                            <td>{index + 1}</td>
+                            <td
+                                style={{
+                                    fontWeight: "bold",
+                                    color: "#6B5E00"
+                                }}
+                            >
+                                {device.endpointId || "-"}
+                            </td>
+                            <td>{device.hostname || "-"}</td>
+                            <td>{device.manufacturer || "-"}</td>
+                            <td>{device.model || "-"}</td>
+                            <td>{device.operatingSystem || "-"}</td>
+                            <td>{device.ip || "-"}</td>
+                            <td>{device.mac || "-"}</td>
+                            <td>{device.responseTime || "-"}</td>
+                            <td
+                                style={{
+                                    padding: "4px 18px",
+                                    textAlign: "left",
+                                    color: device.active
+                                        ? "#008000"
+                                        : "#C00000",
+                                    fontWeight: "bold"
+                                }}
+                            >
+                                {device.active
+                                    ? "Online"
+                                    : "Offline"}
+                            </td>
+                            <td
+                                style={{
+                                    padding: "8px",
+                                    whiteSpace: "nowrap"
+                                }}
+                            >
+                                <button
+                                    className="btn"
+                                    onClick={() => handleView(device)}
+                                    disabled={scanning || refreshing}
+                                >
+                                    👁 View
+                                </button>
+                            </td>
+                        </tr>
+                    ))}
+                </tbody>
+            );
+        });
+
+        const HeaderClock = React.memo(function HeaderClock({ currentDateTime }) {
+            return (
+                <p className="datetime">Date & Time : {currentDateTime}</p>
+            );
+        });
+
+        const DeviceDetailsModal = React.memo(function DeviceDetailsModal({
+
+            device,
+            onClose
+
+        }) {
+            if (!device) {
+                return null;
+            }
+            return (
+                <div className="modal-overlay" onClick={onClose}>
+                    <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                            <h2>Network Device Details</h2>
+                            <button onClick={onClose} style={{ fontSize: "15px", border: "none", background: "none", cursor: "pointer", fontWeight: "bold" }}>✕</button>
+                        </div>
+                        <hr style={{ margin: "2px 0", border: "2px solid olivedrab" }} />
+                        <table style={{ width: "100%", borderCollapse: "collapse" }}>
+                            <tbody>
+
+                                {/* ---------- Device Information ---------- */}
+
+                                <tr><td colSpan="3" className="popdiv">Device Information</td></tr>
+                                <tr><td><b>Hostname</b></td><td className="colon-style">:</td><td>{device.hostname || "-"}</td></tr>
+                                <tr><td><b>Hostname Source</b></td><td className="colon-style">:</td><td>{device.hostnameSource || "-"}</td></tr>
+                                <tr><td style={{ width: "180px" }}><b>Identifier</b></td><td className="colon-style">:</td><td>{device.endpointId || "-"}</td></tr>
+                                <tr><td><b>Manufacturer</b></td><td className="colon-style">:</td><td>{device.manufacturer || "-"}</td></tr>
+                                <tr><td><b>Manufacturer Source</b></td><td className="colon-style">:</td><td>{device.manufacturerSource || "-"}</td></tr>
+                                <tr><td><b>Model</b></td><td className="colon-style">:</td><td>{device.model || "-"}</td></tr>
+                                <tr><td><b>Serial Number</b></td><td className="colon-style">:</td><td>{device.serial || "-"}</td></tr>
+                                <tr><td><b>Device Type</b></td><td className="colon-style">:</td><td>{device.deviceType || "-"}</td></tr>
+                                <tr><td><b>Category</b></td><td className="colon-style">:</td><td>{device.category || "-"}</td></tr>
+                                <tr><td><b>Rank</b></td><td className="colon-style">:</td><td>{device.rank || "-"}</td></tr>
+                                <tr><td><b>Confidence</b></td><td className="colon-style">:</td><td>{device.confidence || "-"}</td></tr>
+
+                                {/* ---------- Network Information ---------- */}
+
+                                <tr><td colSpan="3" className="popdiv">Network Information</td></tr>
+                                <tr><td><b>IP Address</b></td><td className="colon-style">:</td><td>{device.ip || "-"}</td></tr>
+                                <tr><td><b>MAC Address</b></td><td className="colon-style">:</td><td>{device.mac || "-"}</td></tr>
+                                <tr><td><b>DNS Name</b></td><td className="colon-style">:</td><td>{device.dnsName || "-"}</td></tr>
+                                <tr><td><b>IP Version</b></td><td className="colon-style">:</td><td>{device.ipVersion || "-"}</td></tr>
+                                <tr><td><b>Connection Type</b></td><td className="colon-style">:</td><td>{device.connectionType || "-"}</td></tr>
+                                <tr><td><b>Open Ports</b></td><td className="colon-style">:</td><td>{device.openPorts || "-"}</td></tr>
+                                {/*
+                        <tr><td><b>WiFi Band</b></td><td className="colon-style">:</td><td>{device.wifiBand || "-"}</td></tr>
+                        <tr><td><b>WiFi Channel</b></td><td className="colon-style">:</td><td>{device.wifiChannel || "-"}</td></tr>
+                        <tr><td><b>SSID</b></td><td className="colon-style">:</td><td>{device.ssid || "-"}</td></tr>
+                        <tr><td><b>RSSI</b></td><td className="colon-style">:</td><td>{device.rssi || "-"}</td></tr>
+                        */}
+                                <tr><td><b>Services</b></td><td className="colon-style">:</td><td>{device.services || "-"}</td></tr>
+                                <tr><td><b>Response Time</b></td><td className="colon-style">:</td><td>{device.responseTime || "-"}</td></tr>
+
+                                {/* ---------- Discovery Information ---------- */}
+
+                                <tr><td colSpan="3" className="popdiv">Discovery Information</td></tr>
+                                <tr><td><b>Discovery Source</b></td><td className="colon-style">:</td><td>{device.discoverySource || "-"}</td></tr>
+                                <tr><td><b>Primary Protocol</b></td><td className="colon-style">:</td><td>{device.primaryDiscoveryProtocol || "-"}</td></tr>
+                                <tr><td><b>Last Protocol</b></td><td className="colon-style">:</td><td>{device.lastDiscoveryProtocol || "-"}</td></tr>
+                                <tr><td><b>Protocol Count</b></td><td className="colon-style">:</td><td>{device.protocolCount || "-"}</td></tr>
+                                <tr><td><b>Vendor Source</b></td><td className="colon-style">:</td><td>{device.vendorSource || "-"}</td></tr>
+                                <tr><td><b>OS Confidence</b></td><td className="colon-style">:</td><td>{device.osConfidence || "-"}</td></tr>
+                                <tr><td><b>Scan Duration</b></td><td className="colon-style">:</td><td>{device.scanDuration || "-"}</td></tr>
+
+                                {/* ---------- SNMP Information ---------- */}
+
+                                <tr><td colSpan="3" className="popdiv">SNMP Information</td></tr>
+                                <tr><td><b>SNMP Enabled</b></td><td className="colon-style">:</td><td>{device.snmpEnabled ? "Yes" : "No" }</td></tr>
+                                <tr><td><b>SNMP Version</b></td><td className="colon-style">:</td><td>{device.snmpVersion || "-"}</td></tr>
+                                <tr><td><b>System Name</b></td><td className="colon-style">:</td><td>{device.systemName || "-"}</td></tr>
+                                <tr><td><b>System Description</b></td><td className="colon-style">:</td><td>{device.systemDescription || "-"}</td></tr>
+                                <tr><td><b>System Contact</b></td><td className="colon-style">:</td><td>{device.contact || "-"}</td></tr>
+                                <tr><td><b>System Location</b></td><td className="colon-style">:</td><td>{device.location || "-"}</td></tr>
+                                <tr><td><b>System Uptime</b></td><td className="colon-style">:</td><td>{device.uptime || "-"}</td></tr>
+                                <tr><td><b>System Object ID</b></td><td className="colon-style">:</td><td>{device.objectId || "-"}</td></tr>
+
+                                {/* ---------- System Information ---------- */}
+
+                                <tr><td colSpan="3" className="popdiv">System Information</td></tr>
+                                <tr><td><b>Operating System</b></td><td className="colon-style">:</td><td>{device.operatingSystem || "-"}</td></tr>
+                                {/*
+                            <tr><td><b>Firmware</b></td><td className="colon-style">:</td><td>{device.firmware || "-"}</td></tr>
+                            <tr><td><b>Software</b></td><td className="colon-style">:</td><td>{device.software || "-"}</td></tr>
+                            <tr><td><b>Hardware</b></td><td className="colon-style">:</td><td>{device.hardware || "-"}</td></tr>
+                            <tr><td><b>Uptime</b></td><td className="colon-style">:</td><td>{device.uptime || "-"}</td></tr>
+                            <tr><td><b>Last Seen</b></td><td className="colon-style">:</td><td>{device.lastSeen || "-"}</td></tr>
+                            */}
+                                <tr><td><b>Last Boot</b></td><td className="colon-style">:</td><td>{device.lastBoot || "-"}</td></tr>
+                                <tr><td><b>Status</b></td><td className="colon-style">:</td>
+                                    <td style={{ color: device.active ? "#008000" : "#C00000", fontWeight: "bold" }} >
+                                        {device.active ? "🟢 Online" : "🔴 Offline"}
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div style={{ display: "flex", justifyContent: "flex-end", marginTop: "20px" }}>
+                            <button className="btn" onClick={onClose}>Close</button>
+                        </div>
+                    </div>
+                </div>
+            );
+        });
+
+        const PacketDetailsModal = React.memo(function PacketDetailsModal({
+            packet,
+            aiResult,
+            aiLoading,
+            aiError,
+            onAnalyze,
+            onDeepAnalysis,
+            onShowArchitecture,
+            onClose
+        }) {
+
+            if (!packet) {
+                return null;
+            }
+
+            //const recommendations = aiResult?.recommendations || [];
+
+            const orderedAiResult = aiResult
+                ? {
+                    ai: aiResult.ai,
+                    category: aiResult.category,
+                    confidence: aiResult.confidence,
+                    suspicious: aiResult.suspicious,
+                    riskScore: aiResult.riskScore,
+                    riskLevel: aiResult.riskLevel,
+                    length: aiResult.length,
+                    transport: aiResult.transport,
+                    protocol: aiResult.protocol,
+                    source: aiResult.source,
+                    sourcePort: aiResult.sourcePort,
+                    destination: aiResult.destination,
+                    destinationPort: aiResult.destinationPort,
+                    reasons: aiResult.reasons,
+                }
+                : null;
+
+            return (
+                <div
+                    style={{ position: "fixed", top: 0, left: 0, width: "100%", height: "100%", background: "rgba(0,0,0,0.45)", display: "flex", justifyContent: "center", alignItems: "center", zIndex: 9999 }}
+                    onClick={onClose}>
+                    <div onClick={(e) => e.stopPropagation()} style={{ background: "white", width: "550px", borderRadius: "8px", padding: "20px", boxShadow: "0 5px 20px rgba(0,0,0,0.4)" }}>
+                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                            <h2 style={{ margin: 0 }}>Packet Details</h2>
+                            <button onClick={onClose} style={{ fontSize: "18px", border: "none", background: "none", cursor: "pointer", fontWeight: "bold" }}>✕</button>
+                        </div>
+                        <hr className="divider" />
+                        <table style={{ width: "100%", borderCollapse: "collapse" }}>
+                            <tbody>
+                                <tr><td><b>Time</b></td><td className="colon-style">:</td><td>{packet.time}</td></tr>
+                                <tr><td><b>Interface</b></td><td className="colon-style">:</td><td>{packet.interface}</td></tr>
+                                <tr><td><b>Source</b></td><td className="colon-style">:</td><td>{packet.source}</td></tr>
+                                <tr><td><b>Destination</b></td><td className="colon-style">:</td><td>{packet.destination}</td></tr>
+                                <tr><td><b>Protocol</b></td><td className="colon-style">:</td><td>{packet.protocol}</td></tr>
+                                <tr><td><b>Length</b></td><td className="colon-style">:</td><td>{packet.length}</td></tr>
+                                
+                                <tr>
+                                    <td
+                                        colSpan="3"
+                                        style={{
+                                            paddingTop: "10px",
+                                            paddingBottom: "8px"
+                                        }}
+                                    >
+                                        <hr
+                                            style={{
+                                                border: "none",
+                                                borderTop: "1px solid #D0D0D0",
+                                                margin: 0
+                                            }}
+                                        />
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <div style={{ marginTop: "20px", marginBottom: "20px" }}>
+                            <div
+                                style={{
+                                    display: "flex",
+                                    justifyContent: "space-between",
+                                    alignItems: "center",
+                                    marginTop: "20px",
+                                    marginBottom: "20px"
+                                }}
+                            >
+
+                                <button
+                                    className="btn"
+                                    onClick={() => onAnalyze(packet)}
+                                    disabled={aiLoading}
+                                >
+                                    {
+                                        aiLoading
+                                            ? "Analyzing..."
+                                            : "🤖 Analyze Packet"
+                                    }
+                                </button>
+
+                                {aiResult && (
+
+                                    <button
+                                        className="architectureButton"
+                                        title="Analyze Packet Architecture"
+                                        onClick={onShowArchitecture}
+                                    >
+                                        🏗️
+                                    </button>
+
+                                )}
+
+                                <div style={{ flex: 1 }} />
+
+                                {
+                                    aiResult && (
+
+                                        <button
+                                            className="btn"
+                                            onClick={() => onDeepAnalysis(packet)}
+                                        >
+                                            🔬 Deep Analysis
+                                        </button>
+
+                                    )
+                                }
+
+                            </div>
+                            {
+                                aiLoading &&
+
+                                <div
+                                    style={{
+                                        textAlign: "center",
+                                        color: "#1565C0",
+                                        fontWeight: "bold",
+                                        marginBottom: "15px"
+                                    }}
+                                >
+                                    AI is analyzing the selected packet...
+                                </div>
+                            }
+                            {aiError &&
+                                <div style={{ color: "#C62828", fontWeight: "bold", marginBottom: "15px" }}>{aiError}</div>
+                            }
+                            {aiResult &&
+                                <div className="analysis-details">
+                                    <div className="analysis-title">AI Analysis Details</div>
+                                    <table className="analysis-table">
+                                        <tbody>
+                                            <tr><td>AI Summary</td><td>{aiResult.ai}</td></tr>
+                                            <tr><td>Category</td><td>{aiResult.category}</td></tr>
+                                            <tr><td>Risk Score</td><td>{aiResult.riskScore}/100</td></tr>
+                                            <tr><td>Risk Level</td><td>{aiResult.riskLevel}</td></tr>
+                                            <tr><td>Confidence</td><td>{aiResult.confidence}%</td></tr>
+                                            <tr><td>Suspicious</td><td>{aiResult.suspicious ? "Yes" : "No"}</td></tr>
+                                            <tr><td>Transport / Protocol</td><td>{aiResult.transport} / {aiResult.protocol}</td></tr>
+                                            {/*<tr><td>Transport</td><td>{aiResult.transport}</td></tr>*/}
+                                            <tr><td>Length</td><td>{aiResult.length} Bytes</td></tr>
+                                            <tr><td>Source : Port</td><td>{aiResult.source} : {aiResult.sourcePort}</td></tr>
+                                            {/*<tr><td>Source Port</td><td>{aiResult.sourcePort}</td></tr>*/}
+                                            <tr><td>Destination : Port</td><td>{aiResult.destination} : {aiResult.destinationPort}</td></tr>
+                                            {/*<tr><td>Destination Port</td><td>{aiResult.destinationPort}</td></tr>*/}
+                                        </tbody>
+                                    </table>
+                                    {aiResult.reasons?.length > 0 &&
+                                        <>
+                                            <div className="analysis-title">Reasons</div>
+                                            <ul className="analysis-list">{aiResult.reasons.map((reason, index) => <li key={index}> ✔ {reason}</li>)}</ul>
+                                        </>
+                                    }
+                                </div>
+                            }
+                        </div>
+                        <div style={{ display: "flex", justifyContent: "flex-end", marginTop: "20px" }}>
+                            <button className="btn" onClick={onClose}>Close</button>
+                        </div>
+                    </div>
+                </div>
+            );
+        });
+
+        function SystemArchitectureModal({
+            open,
+            onClose
+        }) {
+
+            if (!open) {
+                return null;
+            }
+
+            return (
+
+                <div className="architectureOverlay" onClick={onClose}>
+                    <div className="systemArchitectureModal" onClick={(e) => e.stopPropagation()}>
+                        <div className="architectureHeader">
+                            <span>
+                                🏛 Network Monitoring Platform Architecture
+                            </span>
+                            <button
+                                className="closeButton"
+                                onClick={onClose}
+                            >
+                                ✕
+                            </button>
+                        </div>
+
+                        <img
+                            src="./ArchitectureDiagramSystemFlow.png"
+                            alt="Architecture Diagram"
+                            style={{
+                                width: "100%",
+                                height: "auto",
+                                display: "block",
+                                margin: "0 auto"
+                            }}
+                        />
+                    </div>
+                </div>
+            );
+        }
+        
+        function PacketArchitectureModal({
+            open,
+            onClose
+        }) {
+
+            if (!open) {
+                return null;
+            }
+
+            return (
+
+                <div className="architectureOverlay" onClick={onClose}>
+                    <div className="architectureModal" onClick={(e) => e.stopPropagation()}>
+                        <div className="architectureHeader">
+                            <span>
+                                🏗 Analyze Packet Architecture
+                            </span>
+                            <button className="closeButton" onClick={onClose}>✕</button>
+                        </div>
+                        <img src="./AnalyzePacketArchitecture.png" alt="Analyze Packet Architecture" style={{ width: "auto", maxWidth: "90vw", height: "auto", display: "block" }} />
+                    </div>
+                </div>
+            );
+        }
+
+        function DeepArchitectureModal({
+            open,
+            onClose
+        }) {
+
+            if (!open) {
+                return null;
+            }
+
+            return (
+                <div className="architectureOverlay" onClick={onClose}>
+                    <div className="architectureModalNxt" onClick={(e) => e.stopPropagation()}>
+                        <div className="architectureHeader">
+                            <span>
+                                🧩 Deep Analysis Architecture
+                            </span>
+                            <button className="closeButton" onClick={onClose}>✕</button>
+                        </div>
+                        <img src="./DeepAnalysisArchitecture.png" alt="Deep Analysis Architecture" style={{ width: "auto", height: "auto", display: "block", margin: "0 auto" }} />
+                    </div>
+                </div>
+            );
+        }
+
+        const PACKET_DETAILS_WIDTH = 600;
+        const DEEP_ANALYSIS_WIDTH = 500;
+        const MODAL_GAP = 4;
+
+        const DeepAnalysisModal = React.memo(function DeepAnalysisModal({
+            style,
+            open,
+            packet,
+            result,
+            loading,
+            error,
+            onClose,
+            onShowArchitecture
+        }) {
+
+            if (!open || !packet)
+                return null;
+
+            const scrollBoxStyle = {
+                maxHeight: "110px",
+                overflowY: "auto",
+                border: "1px solid #C8C8C8",
+                borderRadius: "4px",
+                padding: "6px 8px",
+                marginTop: "6px",
+                marginBottom: "18px",
+                backgroundColor: "#FFFFFF",
+                fontSize: "14px",
+                lineHeight: "1.5",
+                whiteSpace: "pre-wrap"
+            };
+            const sectionTitleStyle = {
+                fontSize: "15px",
+                fontWeight: "700",
+                color: "#333",
+                marginTop: "8px",
+                marginBottom: "4px"
+            };
+
+            return (
+                <div style={{
+                    position: "fixed", top: "50%", left: `calc(50% + ${PACKET_DETAILS_WIDTH / 2 + MODAL_GAP}px)`, transform: "translateY(-50%)", width: `${DEEP_ANALYSIS_WIDTH}px`,
+                    height: "720px", background: "#FFFFFF", opacity: 1, borderRadius: "10px", border: "1px solid #D9D9D9", boxShadow: "0 8px 35px rgba(0,0,0,0.45)", zIndex: 10001, padding: "20px", overflowY: "auto"
+                }}>
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                        <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                            <h2 style={{ margin: 0, color: "#556B2F", fontSize: "20px", fontWeight: "700" }}>
+                                🔬 Deep Analysis
+                            </h2>
+                            {result &&
+                                <button className="architectureButton" title="Deep Analysis Architecture" onClick={onShowArchitecture}>
+                                    🧩
+                                </button>
+                            }
+                        </div>
+                        <button onClick={onClose} style={{ fontSize: "18px", border: "none", background: "none", cursor: "pointer", fontWeight: "bold" }}>
+                            ✕
+                        </button>
+                    </div>
+                    <hr style={{ margin: "6px 0 15px 0", border: "2px solid #556B2F" }} />
+                    {/*
+                    <div>
+                        <h3 style={{ color: "#333", marginBottom: "18px", fontWeight: "700" }}>Packet Information</h3>
+                        <table
+                            style={{
+                                width: "100%",
+                                borderCollapse: "collapse"
+                            }}
+                        >
+                            <tbody>
+
+                                <tr>
+                                    <td style={{ width: "150px" }}><b>Source</b></td>
+                                    <td style={{ width: "20px" }}>:</td>
+                                    <td>{packet.source}</td>
+                                </tr>
+
+                                <tr>
+                                    <td><b>Destination</b></td>
+                                    <td>:</td>
+                                    <td>{packet.destination}</td>
+                                </tr>
+
+                                <tr>
+                                    <td><b>Protocol</b></td>
+                                    <td>:</td>
+                                    <td>{packet.protocol}</td>
+                                </tr>
+
+                                <tr>
+                                    <td><b>Length</b></td>
+                                    <td>:</td>
+                                    <td>{packet.length}</td>
+                                </tr>
+
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <hr style={{ margin: "6px 0 15px 0", border: "2px solid #556B2F" }} />
+                    */}
+                    <h3 style={{ color: "#333", marginBottom: "18px", fontWeight: "700" }}>LLM Response</h3>
+                    <div
+                        style={{
+                            marginTop: "15px",
+                            padding: "0px",
+                            border: "none",
+                            borderRadius: 0,
+                            background: "#FFFFFF"
+                        }}
+                    >
+                        {loading && (
+                            <div
+                                style={{
+                                    color: "#1565C0",
+                                    fontWeight: "bold"
+                                }}
+                            >
+                                🔄 Performing Deep Analysis...
+                            </div>
+                        )}
+                        {error && (
+                            <div
+                                style={{
+                                    color: "#C62828",
+                                    fontWeight: "bold"
+                                }}
+                            >
+                                {error}
+                            </div>
+                        )}
+                        {result && (
+                            <div>
+                                <div style={sectionTitleStyle}>Summary</div>
+                                <div style={scrollBoxStyle}>{result.summary}</div>
+                                <table
+                                    style={{
+                                        width: "100%",
+                                        borderCollapse: "collapse",
+                                        marginTop: "15px",
+                                        marginBottom: "20px"
+                                    }}
+                                >
+                                    <thead>
+                                        <tr
+                                            style={{
+                                                background: "#F4F4F4"
+                                            }}
+                                        >
+                                            <th
+                                                style={{
+                                                    border: "1px solid #CCCCCC",
+                                                    padding: "8px",
+                                                    textAlign: "center"
+                                                }}
+                                            >
+                                                Risk Score
+                                            </th>
+                                            <th
+                                                style={{
+                                                    border: "1px solid #CCCCCC",
+                                                    padding: "8px",
+                                                    textAlign: "center"
+                                                }}
+                                            >
+                                                Risk Level
+                                            </th>
+                                            <th
+                                                style={{
+                                                    border: "1px solid #CCCCCC",
+                                                    padding: "8px",
+                                                    textAlign: "center"
+                                                }}
+                                            >
+                                                Category
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td
+                                                style={{
+                                                    border: "1px solid #CCCCCC",
+                                                    padding: "10px",
+                                                    textAlign: "center",
+                                                    fontWeight: "bold"
+                                                }}
+                                            >
+                                                {result.risk_score}/100
+                                            </td>
+                                            <td
+                                                style={{
+                                                    border: "1px solid #CCCCCC",
+                                                    padding: "10px",
+                                                    textAlign: "center",
+                                                    fontWeight: "bold",
+                                                    color:
+                                                        result.risk_level === "HIGH"
+                                                            ? "#D32F2F"
+                                                            : result.risk_level === "MEDIUM"
+                                                                ? "#F57C00"
+                                                                : "#388E3C"
+                                                }}
+                                            >
+                                                {result.risk_level}
+                                            </td>
+                                            <td
+                                                style={{
+                                                    border: "1px solid #CCCCCC",
+                                                    padding: "10px",
+                                                    textAlign: "center"
+                                                }}
+                                            >
+                                                {result.category}
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <div style={sectionTitleStyle}>Reasoning</div>
+                                <div style={scrollBoxStyle}>{result.reasoning}</div>
+                                <div style={sectionTitleStyle}>Observations</div>
+                                <div style={scrollBoxStyle}>
+                                    <ul
+                                        style={{
+                                            margin: 0,
+                                            paddingLeft: "20px"
+                                        }}
+                                    >
+                                        {result.observations?.map((item, index) => (
+
+                                            <li key={index}>
+                                                {item}
+                                            </li>
+
+                                        ))}
+                                    </ul>
+                                </div>
+                                <div style={sectionTitleStyle}>Recommendations</div>
+                                <div style={scrollBoxStyle}>
+                                    <ul
+                                        style={{
+                                            margin: 0,
+                                            paddingLeft: "20px"
+                                        }}
+                                    >
+                                        {result.recommendations?.map((item, index) => (
+                                            <li key={index}>
+                                                {item}
+                                            </li>
+                                        ))}
+                                    </ul>
+                                </div>
+                            </div>
+                        )}
+
+                    </div>
+
+                    {/*
+                        loading && (
+                            <div
+                                style={{
+                                    color: "#1565C0",
+                                    fontWeight: "bold",
+                                    marginTop: "20px"
+                                }}
+                            >
+                                🔄 Performing Deep Analysis...
+                            </div>
+                        )
+                    }
+
+                    {
+                        error && (
+                            <div
+                                style={{
+                                    color: "#C62828",
+                                    fontWeight: "bold",
+                                    marginTop: "20px"
+                                }}
+                            >
+                                {error}
+                            </div>
+                        )
+                    }
+
+                    {
+                        result && (
+                            <div style={{ marginTop: "20px" }}>
+
+                                <h3>Overall Observation</h3>
+
+                                <p>{result.summary}</p>
+
+                                <h3>Risk Level</h3>
+
+                                <p>{result.riskLevel}</p>
+
+                                <h3>Recommendations</h3>
+
+                                <ul>
+                                    {result.recommendations?.map((item, index) => (
+                                        <li key={index}>{item}</li>
+                                    ))}
+                                </ul>
+
+                            </div>
+                        )
+                    */}
+
+                </div>
+            );
+
+        });
+
+        const TrafficAnalysisModal = React.memo(function TrafficAnalysisModal({
+
+            show,
+            analysis,
+            onClose
+
+        }) {
+
+            if (!show || !analysis) {
+                return null;
+            }
+
+            const protocols = analysis.protocols || {};
+            const topTalkers = analysis.topTalkers || [];
+            const uploadDownloadRatio = analysis.uploadDownloadRatio || {
+                upload: 0,
+                download: 0
+            };
+
+            return (
+                <div className="modal-overlay" onClick={onClose}>
+                    <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                            <h2 style={{ margin: 0 }}>📊 Traffic Analysis</h2>
+                            <button onClick={onClose} style={{ fontSize: "15px", border: "none", background: "none", cursor: "pointer", fontWeight: "bold" }}>✕</button>
+                        </div>
+                        <hr className="divider" />
+                        <div>
+                            <table className="device-details">
+                                <tbody>
+                                    <tr><td><b>Total Packets</b></td><td className="colon-style">:</td><td>{analysis.totalPackets}</td></tr>
+                                    <tr><td><b>Total Bytes</b></td><td className="colon-style">:</td><td>{analysis.totalBytes}</td></tr>
+                                    <tr><td><b>Average Packet Size</b></td><td className="colon-style">:</td><td>{analysis.averagePacketSize} Bytes</td></tr>
+                                    <tr><td><b>Largest Packet</b></td><td className="colon-style">:</td><td>{analysis.largestPacket} Bytes</td></tr>
+                                    <tr><td><b>Smallest Packet</b></td><td className="colon-style">:</td><td>{analysis.smallestPacket} Bytes</td></tr>
+                                    <tr><td><b>Packet Rate</b></td><td className="colon-style">:</td><td>{analysis.packetRate} Packets/sec</td></tr>
+                                    <tr><td><b>Throughput</b></td><td className="colon-style">:</td><td>{analysis.throughputMbps} Mbps</td></tr>
+                                    <tr><td><b>Peak Traffic</b></td><td className="colon-style">:</td><td>{analysis.peakTrafficTime}</td></tr>
+                                    <tr><td><b>Upload</b></td><td className="colon-style">:</td><td>{uploadDownloadRatio.upload}%</td></tr>
+                                    <tr><td><b>Download</b></td><td className="colon-style">:</td><td>{uploadDownloadRatio.download}%</td></tr>
+                                </tbody>
+                            </table>
+                            <h3>Protocol Distribution</h3>
+                            <table className="device-table">
+                                <thead>
+                                    <tr><th>Protocol</th><th style={{ textAlign: "center" }}>Packets</th></tr>
+                                </thead>
+                                <tbody>
+                                    {Object.entries(protocols).map(
+                                        ([protocol, count]) => (
+                                            <tr key={protocol}><td>{protocol}</td><td>{count}</td></tr>
+                                        )
+                                    )}
+                                </tbody>
+                            </table>
+                            <h3>Top Talkers</h3>
+                            <table className="device-table">
+                                <thead>
+                                    <tr><th>IP</th><th>Packets</th><th style={{ textAlign: "center" }}>Bytes</th></tr>
+                                </thead>
+                                <tbody>
+                                    {topTalkers.map(device => (
+                                        <tr key={device.ip}>
+                                            <td>{device.ip}</td>
+                                            <td>{device.packets}</td>
+                                            <td>{device.bytes}</td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>                  </div>
+                        <div style={{ display: "flex", justifyContent: "flex-end", marginTop: "20px" }}>
+                            <button className="btn" onClick={onClose}>Close</button>
+                        </div>
+                    </div>
+                </div>
+            );
+        });
+
+        function RiskAnalysisModal({
+            show,
+            analysis,
+            onClose
+        }) {
+
+            if (!show || !analysis) {
+                return null;
+            }
+
+            const protocols = analysis.protocols || {};
+            const topTalkers = analysis.topTalkers || [];
+            const recommendations = analysis.recommendations || [];
+            const uploadDownloadRatio =
+                analysis.uploadDownloadRatio || {
+                    upload: 0,
+                    download: 0
+                };
+
+            return (
+
+                <div onClick={onClose} className="modal-overlay">
+                    <div onClick={(e) => e.stopPropagation()} className="modal-content">
+                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                            <h2 style={{ margin: 0 }}>⚠️ Risk Analysis</h2>
+                            <button onClick={onClose} style={{ fontSize: "15px", border: "none", background: "none", cursor: "pointer", fontWeight: "bold" }}>✕</button>
+                        </div>
+                        <hr className="divider" />
+
+                        <table className="device-details">
+                            <tbody>
+                                <tr><td><b>Generated</b></td><td className="colon-style">:</td><td>{analysis.generated}</td></tr>
+                                <tr>
+                                    <td><b>Risk Score</b></td>
+                                    <td className="colon-style">:</td>
+                                    <td><div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+                                        <div style={{ width: "220px", height: "14px", background: "#E0E0E0", borderRadius: "8px", overflow: "hidden" }}>
+                                            <div style={{
+                                                width: `${analysis.riskScore}%`, height: "100%", background:
+                                                    analysis.riskScore >= 75
+                                                        ? "#C62828"
+                                                        :
+                                                        analysis.riskScore >= 50
+                                                            ? "#EF6C00"
+                                                            :
+                                                            analysis.riskScore >= 25
+                                                                ? "#F9A825"
+                                                                :
+                                                                "#2E7D32"
+                                            }} />
+                                        </div>
+                                        <b>{analysis.riskScore}/100 </b>
+                                    </div> </td></tr>
+                                <tr><td><b>Risk Level</b></td><td className="colon-style">:</td>
+                                    <td><span style={{
+                                        fontWeight: "bold",
+                                        color:
+                                            analysis.riskLevel === "LOW"
+                                                ? "green"
+                                                :
+                                                analysis.riskLevel === "MEDIUM"
+                                                    ? "orange"
+                                                    :
+                                                    analysis.riskLevel === "HIGH"
+                                                        ? "#C62828"
+                                                        :
+                                                        "red"
+                                    }}>{analysis.riskLevel}</span></td></tr>
+                                <tr><td><b>Total Packets</b></td><td className="colon-style">:</td><td>{analysis.totalPackets}</td></tr>
+                                <tr><td><b>Packet Rate</b></td><td className="colon-style">:</td><td>{analysis.packetRate} Packets/sec</td></tr>
+                                <tr><td><b>Throughput</b></td><td className="colon-style">:</td><td>{analysis.throughput} Mbps</td></tr>
+                                <tr><td><b>Upload</b></td><td className="colon-style">:</td><td>{uploadDownloadRatio.upload}%</td></tr>
+                                <tr><td><b>Download</b></td><td className="colon-style">:</td><td>{uploadDownloadRatio.download}%</td></tr>
+                            </tbody>
+                        </table>
+                        <h3>Recommendations</h3>
+
+                        <table className="device-table">
+                            <tbody>{recommendations.map((item, index) => <tr key={index}><td>✅ {item}</td></tr>)}
+                            </tbody>
+                        </table>
+                        <h3>Protocol Statistics</h3>
+                        <table className="device-table">
+                            <thead><tr><th>Protocol</th><th style={{ textAlign: "center" }}>Packets</th></tr></thead>
+                            <tbody>{Object.entries(protocols).sort((a, b) => b[1] - a[1]).map(([protocol, count]) =>
+                                <tr key={protocol}><td>{protocol}</td><td style={{ textAlign: "center" }}>{count}</td></tr>)}
+                            </tbody>
+                        </table>
+                        {/*
+                <h3>Top Talkers</h3>
+                <table className="device-table">
+                    <thead><tr><th>IP Address</th><th>Packets</th><th>Bytes</th></tr></thead>
+                    <tbody>{topTalkers.sort((a,b)=>b.packets-a.packets).map(device=>
+                        <tr key={device.ip}><td>{device.ip}</td><td>{device.packets}</td><td>{device.bytes}</td></tr>)}
+                    </tbody>
+                </table>
+                */}
+                        <div style={{ display: "flex", justifyContent: "flex-end", marginTop: "20px" }}><button className="btn" onClick={onClose}>Close</button>
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+
+        const FooterBar = React.memo(function FooterBar({
+
+            apiVersion,
+            serverStatus,
+            footerTime,
+            versionInfo,
+            refreshInterval
+
+        }) {
+
+            return (
+                <footer style={{ marginTop: "25px", padding: "12px", background: "#556B2F", color: "white", textAlign: "center", borderRadius: "8px", fontSize: "14px" }}>
+                    <div style={{ marginTop: "5px" }}>
+                        API Version : {apiVersion}&nbsp;&nbsp;|&nbsp;&nbsp;Status :
+                        <span style={{
+                            color:
+                                serverStatus === "UP"
+                                    ? "#22c55e"
+                                    : "#ef4444",
+
+                            fontWeight: "bold"
+                        }}>{" "}{serverStatus}</span>&nbsp;&nbsp;|&nbsp;&nbsp;
+                        Last Checked : {footerTime}
+                    </div>
+                    <div style={{ marginTop: "5px" }}>
+                        Auto Refresh : {refreshInterval / 1000} Seconds &nbsp;&nbsp;|&nbsp;&nbsp; © 2026 &nbsp;&nbsp;|&nbsp;&nbsp; Developed by L&T
+                        &nbsp;&nbsp;|&nbsp;&nbsp; Build : {versionInfo.build} &nbsp;&nbsp;|&nbsp;&nbsp; Python : {versionInfo.python}
+                    </div>
+                </footer>
+            );
+        });
+
+        const CONFIG = {
+            API_BASE: "http://127.0.0.1:5000",
+            // Device Table
+            DEVICE_REFRESH_INTERVAL: 60000,      // 60 sec
+            // Live Packet Table
+            PACKET_REFRESH_INTERVAL: 60000,      // 60 sec
+            // Footer
+            FOOTER_REFRESH_INTERVAL: 20000,      // 20 sec
+            // Date & Time
+            CLOCK_REFRESH_INTERVAL: 1000,        // 1 sec
+            // Auto Scroll
+            AUTO_SCROLL_DELAY: 100,              // ms
+            // Search
+            SEARCH_DEBOUNCE: 300,                 // ms (future use)
+            DEVICE_VISIBLE_ROWS: 5,
+            PACKET_VISIBLE_ROWS: 10
+        };
+
+        function DashUI() {
+
+            const [lastScanTime, setLastScanTime] = React.useState(localStorage.getItem("lastScanTime") || "");
+            const [selectedDevice, setSelectedDevice] = React.useState(null);
+            const [refreshing, setRefreshing] = React.useState(false);
+            const [scanning, setScanning] = React.useState(false);
+            const [searchText, setSearchText] = React.useState("");
+            const [devices, setDevices] = React.useState([])
+            const [error, setError] = React.useState("");
+            const [versionInfo, setVersionInfo] = React.useState({});
+            const [packets, setPackets] = React.useState([]);
+            const [packetSearch, setPacketSearch] = React.useState("");
+            const [transportFilter, setTransportFilter] = React.useState("");
+            const [protocolFilter, setProtocolFilter] = React.useState("");
+            const [selectedPacket, setSelectedPacket] = React.useState(null);
+            const packetTableRef = React.useRef(null);
+            const [apiVersion, setApiVersion] = React.useState("");
+            const [serverStatus, setServerStatus] = React.useState("Checking...");
+            const [footerTime, setFooterTime] = React.useState("");
+            const [selectedWSPacket, setSelectedWSPacket] = React.useState(null);
+            const [packetAIResult, setPacketAIResult] = React.useState(null);
+            const [showDeepAnalysis, setShowDeepAnalysis] = React.useState(false);
+            const [selectedDeepPacket, setSelectedDeepPacket] = React.useState(null);
+            const [packetAILoading, setPacketAILoading] = React.useState(false);
+            const [packetAIError, setPacketAIError] = React.useState("");
+            const [showTrafficAnalysis, setShowTrafficAnalysis] = React.useState(false);
+            const [showRiskAnalysis, setShowRiskAnalysis] = React.useState(false);
+            const [riskAnalysis, setRiskAnalysis] = React.useState(null);
+            const [trafficAnalysis, setTrafficAnalysis] = React.useState(null);
+            const [debouncedSearch, setDebouncedSearch] = React.useState(searchText);
+            const search = debouncedSearch.trim().toLowerCase();
+            const refreshingRef = React.useRef(false);
+            const scanningRef = React.useRef(false);
+            const [deepAnalysisResult, setDeepAnalysisResult] = React.useState(null);
+            const [deepAnalysisLoading, setDeepAnalysisLoading] = React.useState(false);
+            const [deepAnalysisError, setDeepAnalysisError] = React.useState("");
+            const [showPacketArchitecture, setShowPacketArchitecture] = React.useState(false);
+            const [showDeepArchitecture, setShowDeepArchitecture] = React.useState(false);
+            const [showSystemArchitecture, setShowSystemArchitecture] = React.useState(false);
+
+            const [currentDateTime, setCurrentDateTime] = React.useState(
+                new Date().toLocaleString('en-GB', {
+                    day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true
+                })
+            );
+
+            const handleLogoClick = () => { setShowSystemArchitecture(true); };
+
+            const loadTrafficAnalysis = React.useCallback(() => {
+
+                fetch(CONFIG.API_BASE + "/traffic-analysis")
+
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error("Traffic Analysis Failed");
+                        }
+                        return response.json();
+                    })
+
+                    .then(data => {
+                        setTrafficAnalysis(data);
+                        setShowTrafficAnalysis(true);
+                    })
+
+                    .catch(error => {
+                        console.error(error);
+                        alert("Unable to load Traffic Analysis");
+                    });
+            }, []);
+
+            const loadRiskAnalysis = React.useCallback(() => {
+
+                fetch(CONFIG.API_BASE + "/risk-analysis")
+
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error("Risk Analysis Failed");
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        setRiskAnalysis(data);
+                        setShowRiskAnalysis(true);
+                    })
+                    .catch(error => {
+                        console.error(error);
+                        alert("Unable to load Risk Analysis");
+                    });
+            }, []);
+
+            const loadPackets = React.useCallback(async () => {
+                try {
+                    const response = await fetch(CONFIG.API_BASE + "/packets");
+                    if (!response.ok)
+                        throw new Error("Unable to load packets");
+
+                    const data = await response.json();
+                    const packetList = Array.isArray(data.packets)
+                        ? data.packets
+                        : [];
+
+                    setPackets(previous => {
+                        if (previous.length === packetList.length) {
+                            const unchanged = previous.every((packet, index) =>
+                                packet.id === packetList[index]?.id
+                            );
+
+                            if (unchanged)
+                                return previous;
+                        }
+                        return packetList;
+                    });
+                    setTimeout(() => {
+                        if (packetTableRef.current) {
+                            packetTableRef.current.scrollTop =
+                                packetTableRef.current.scrollHeight;
+                        }
+                    }, CONFIG.AUTO_SCROLL_DELAY);
+                } catch (err) {
+                    console.error(err);
+                }
+            }, []);
+
+            const analyzePacket = React.useCallback(async (packet) => {
+
+                if (!packet)
+                    return;
+
+                setPacketAILoading(true);
+                setPacketAIError("");
+                setPacketAIResult(null);
+
+                const url = CONFIG.API_BASE + "/ai/analyze_packet";
+
+                try {
+                    const response = await fetch(
+                        CONFIG.API_BASE + "/ai/analyze_packet",
+                        {
+                            method: "POST",
+                            headers: {
+                                "Content-Type": "application/json"
+                            },
+                            body: JSON.stringify(packet)
+                        }
+                    );
+
+                    if (!response.ok)
+                        throw new Error(
+                            "Unable to analyze packet."
+                        );
+
+                    const data = await response.json();
+
+                    setPacketAIResult(data.analysis);
+
+                    setPackets(previous =>
+                        previous.map(p => {
+
+                            if (p.id !== packet.id)
+                                return p;
+
+                            return {
+                                ...p,
+                                riskScore: data.analysis.riskScore,
+                                riskLevel: data.analysis.riskLevel,
+                                confidence: data.analysis.confidence,
+                                category: data.analysis.category,
+                                suspicious: data.analysis.suspicious
+                            };
+                        })
+                    );
+
+                    // Refresh Live Packet Table
+                    await loadPackets();
+
+                    const updatedPacket = data.packetNumber
+                        ? packets.find(p => p.id === data.packetNumber)
+                        : null;
+
+                    if (updatedPacket) {
+                        setSelectedPacket(updatedPacket);
+                        setSelectedWSPacket(updatedPacket);
+                    }
+
+                }
+
+                catch (err) {
+                    console.error(err);
+                    setPacketAIError(
+                        err.message
+                    );
+                }
+
+                finally {
+                    setPacketAILoading(false);
+                }
+
+            }, []);
+            /*
+            React.useEffect(() => {
+
+                if (!selectedWSPacket)
+                    return;
+
+                if (
+                    packetAIResult &&
+                    packetAIResult.packetId === selectedWSPacket.id
+                ) {
+                    return;
+                }
+
+                analyzePacket(selectedWSPacket);
+
+            }, [
+                selectedWSPacket,
+                analyzePacket,
+                packetAIResult
+            ]);
+            */
+            const deepAnalyzePacket = React.useCallback(async (packet) => {
+
+                if (!packet)
+                    return;
+
+                setSelectedDeepPacket(packet);
+                setShowDeepAnalysis(true);
+                setDeepAnalysisLoading(true);
+                setDeepAnalysisResult(null);
+                setDeepAnalysisError("");
+
+
+                try {
+                    const response = await fetch(
+                        CONFIG.API_BASE + "/deep-analysis",
+                        {
+                            method: "POST",
+                            headers: {
+                                "Content-Type": "application/json"
+                            },
+                            body: JSON.stringify({
+                                packetNumber: packet.id
+                            })
+                        }
+                    );
+
+                    if (!response.ok) {
+                        throw new Error("Unable to perform Deep Analysis.");
+                    }
+                    const data = await response.json();
+                    setDeepAnalysisResult(data.analysis);
+
+                } catch (err) {
+                    setDeepAnalysisError(err.message);
+
+                } finally {
+                    setDeepAnalysisLoading(false);
+                }
+
+            }, []);
+
+            const loadServerInfo = React.useCallback(async () => {
+
+                try {
+                    const response = await fetch(CONFIG.API_BASE + "/");
+                    const data = await response.json();
+                    setServerStatus(data.status || "DOWN");
+                }
+                catch (err) {
+                    console.error(err);
+                    setServerStatus("DOWN");
+                }
+            }, []);
+
+            const loadVersion = React.useCallback(async () => {
+
+                try {
+                    const response = await fetch(CONFIG.API_BASE + "/version");
+                    const data = await response.json();
+                    setVersionInfo(data);
+                    setApiVersion(data.version || "");
+                }
+                catch (err) {
+                    console.error(err);
+                    setApiVersion("Unknown");
+                }
+            }, []);
+
+            const loadPing = React.useCallback(async () => {
+
+                try {
+                    const response = await fetch(CONFIG.API_BASE + "/ping");
+                    const data = await response.json();
+                    setFooterTime(previous =>
+                        previous === (data.time || "")
+                            ? previous
+                            : data.time
+                    );
+                    setServerStatus(previous =>
+                        previous === (data.status || "DOWN")
+                            ? previous
+                            : data.status
+                    );
+                }
+                catch (err) {
+                    console.error(err);
+                    setServerStatus("DOWN");
+                    setFooterTime("--");
+                }
+            }, []);
+
+            const filteredDevices = React.useMemo(() => {
+
+                if (!search) return devices;
+
+                return devices.filter(device => {
+
+                    return [device.endpointId, device.ip, device.mac, device.manufacturer, device.model, device.firmware, device.lastBoot]
+                        .filter(Boolean)
+                        .some(value =>
+                            value.toString().toLowerCase().includes(search)
+                        );
+
+                });
+
+            }, [devices, search]);
+
+            const sortedDevices = React.useMemo(() => {
+
+                return [...filteredDevices].sort((a, b) =>
+                    (a.ip || "").localeCompare(
+                        (b.ip || ""),
+                        undefined,
+                        { numeric: true }
+                    )
+                );
+
+            }, [filteredDevices]);
+
+            const deviceStatistics = React.useMemo(() => {
+
+                let online = 0;
+                let offline = 0;
+                devices.forEach(device => {
+
+                    if (device.active)
+                        online++;
+                    else
+                        offline++;
+                });
+
+                return {
+                    online,
+                    offline
+                };
+            }, [devices]);
+
+            const deviceStatus = React.useMemo(() => {
+
+                if (scanning) {
+                    return {
+                        color: "#1565C0",
+                        title: "🔄 Scanning Network...",
+                        message: "Please wait while devices are being discovered."
+                    };
+                }
+
+                if (refreshing) {
+                    return {
+                        color: "#1565C0",
+                        title: "🔄 Refreshing Devices...",
+                        message: "Updating the current device information."
+                    };
+                }
+
+                if (error) {
+                    return {
+                        color: "#C00000",
+                        title: "⚠ Unable to communicate with the server",
+                        message: error
+                    };
+                }
+
+                if (devices.length === 0) {
+                    return {
+                        color: "#556B2F",
+                        title: "Initializing Network Discovery...",
+                        message: "Waiting for the next network scan..."
+                    };
+                }
+
+                return null;
+
+            }, [scanning, refreshing, error, devices.length]);
+
+            const protocolOptions = React.useMemo(() => {
+
+                if (!transportFilter)
+                    return [];
+
+                return [...new Set(
+                    packets
+                        .filter(packet =>
+                            String(packet.transport || "")
+                                .trim()
+                                .toUpperCase() ===
+                            String(transportFilter || "")
+                                .trim()
+                                .toUpperCase()
+                        )
+                        .map(packet => packet.protocol)
+                        .filter(Boolean)
+                )].sort();
+
+            }, [packets, transportFilter]);
+
+
+            const filteredPackets = React.useMemo(() => {
+
+                const search = packetSearch.trim().toLowerCase();
+
+                return packets.filter(packet => {
+
+                    const transport =
+                        String(packet.transport || "")
+                            .trim()
+                            .toUpperCase();
+
+                    const protocol =
+                        String(packet.protocol || "")
+                            .trim()
+                            .toUpperCase();
+
+                    const selectedTransport =
+                        String(transportFilter || "")
+                            .trim()
+                            .toUpperCase();
+
+                    const selectedProtocol =
+                        String(protocolFilter || "")
+                            .trim()
+                            .toUpperCase();
+
+                    if (selectedTransport && transport !== selectedTransport
+                    )
+                        return false;
+                    if (selectedProtocol && protocol !== selectedProtocol
+                    )
+                        return false;
+                    if (!search)
+                        return true;
+                    return (
+                        (packet.source || "").toLowerCase().includes(search) ||
+                        (packet.destination || "").toLowerCase().includes(search) ||
+                        (packet.protocol || "").toLowerCase().includes(search) ||
+                        (packet.transport || "").toLowerCase().includes(search) ||
+                        (packet.interface || "").toLowerCase().includes(search) ||
+                        String(packet.length).includes(search)
+                    );
+                });
+
+            }, [packets, packetSearch, transportFilter, protocolFilter]);
+
+            React.useEffect(() => {
+
+                console.table(
+                    filteredPackets.slice(0, 20).map(packet => ({
+                        transport: packet.transport,
+                        protocol: packet.protocol
+                    }))
+                );
+
+                if (packets.length > 0) {
+                    console.table(
+                        packets.slice(0, 20).map(packet => ({
+                            transport: packet.transport,
+                            protocol: packet.protocol,
+                            source: packet.source,
+                            destination: packet.destination
+                        }))
+                    );
+                }
+            }, [packets, filteredPackets, transportFilter, protocolFilter]);
+
+
+            const filteredPacketCount = React.useMemo(
+
+                () => filteredPackets.length,
+                [filteredPackets]
+            );
+
+            const packetSummary = React.useMemo(() => {
+
+                const summary = {
+                    total: 0,
+                    counts: {}
+                };
+
+                packets.forEach(packet => {
+
+                    const transport = (packet.transport || "UNKNOWN").toUpperCase();
+                    const protocol = (packet.protocol || "OTHER").toUpperCase();
+
+                    // No Transport Selected
+                    if (transportFilter === "") {
+                        summary.total++;
+                        if (transport === "TCP") {
+                            summary.counts.TCP =
+                                (summary.counts.TCP || 0) + 1;
+                        }
+                        else if (transport === "UDP") {
+                            summary.counts.UDP =
+                                (summary.counts.UDP || 0) + 1;
+                        }
+                        else {
+                            summary.counts.UNKNOWN =
+                                (summary.counts.UNKNOWN || 0) + 1;
+                        }
+                        return;
+                    }
+
+                    // TCP
+                    if (transportFilter === "TCP") {
+                        if (transport !== "TCP")
+                            return;
+                        summary.total++;
+                        summary.counts[protocol] =
+                            (summary.counts[protocol] || 0) + 1;
+                        return;
+                    }
+
+                    // UDP
+                    if (transportFilter === "UDP") {
+                        if (transport !== "UDP")
+                            return;
+                        summary.total++;
+                        summary.counts[protocol] =
+                            (summary.counts[protocol] || 0) + 1;
+                        return;
+                    }
+
+                    // UNKNOWN
+                    if (transportFilter === "UNKNOWN") {
+                        if (
+                            transport === "TCP" ||
+                            transport === "UDP"
+                        )
+                            return;
+                        summary.total++;
+                        summary.counts[protocol] =
+                            (summary.counts[protocol] || 0) + 1;
+                    }
+                });
+
+                return summary;
+
+            }, [packets, transportFilter]);
+
+            const refreshDevices = React.useCallback(() => {
+
+                console.count("refreshDevices()");
+                console.trace("refreshDevices()");
+
+                if (refreshingRef.current)
+                    return;
+
+                if (scanningRef.current)
+                    return;
+
+                refreshingRef.current = true;
+                setRefreshing(true);
+                setError("");
+
+                fetch(CONFIG.API_BASE + "/devices")
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error("Refresh failed");
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        const newDevices = Array.isArray(data.devices) ? data.devices : [];
+                        setDevices(previous => {
+
+                            if (previous.length === newDevices.length) {
+                                const unchanged = previous.every((device, index) =>
+                                    device.ip === newDevices[index]?.ip &&
+                                    device.mac === newDevices[index]?.mac &&
+                                    device.active === newDevices[index]?.active
+                                );
+
+                                if (unchanged)
+                                    return previous;
+                            }
+                            return newDevices;
+                        });
+
+                        if (data.scanTime) {
+                            setLastScanTime(data.scanTime);
+                            localStorage.setItem(
+                                "lastScanTime",
+                                data.scanTime
+                            );
+                        }
+                    })
+                    .catch(error => {
+                        console.error(error);
+                        setError("Unable to refresh device information.");
+                    })
+                    .finally(() => {
+                        refreshingRef.current = false;
+                        setRefreshing(false);
+                    });
+            }, []);
+
+            const handleView = React.useCallback((device) => {
+                setSelectedDevice(device);
+            }, []);
+
+            const handleEdit = (device) => {
+                console.log(device);
+            };
+
+            const scanNetwork = React.useCallback(() => {
+
+                if (scanning || refreshing)
+                    return;
+
+                scanningRef.current = true;
+                setScanning(true);
+                setError("");
+                fetch(CONFIG.API_BASE + "/scan")
+                    .then(response => {
+                        if (!response.ok)
+                            throw new Error("Scan failed");
+                        return response.json();
+                    })
+
+                    .then(data => {
+                        const newDevices = Array.isArray(data.devices)
+                            ? data.devices
+                            : [];
+
+                        setDevices(previous => {
+                            if (previous.length === newDevices.length) {
+                                const unchanged = previous.every((device, index) =>
+                                    device.ip === newDevices[index]?.ip &&
+                                    device.mac === newDevices[index]?.mac &&
+                                    device.active === newDevices[index]?.active
+                                );
+
+                                if (unchanged)
+                                    return previous;
+                            }
+                            return newDevices;
+                        });
+
+                        if (data.scanTime) {
+                            setLastScanTime(data.scanTime);
+                            localStorage.setItem(
+                                "lastScanTime",
+                                data.scanTime
+                            );
+                        }
+                    })
+
+                    .catch(error => {
+                        console.error(error);
+                        setError("Unable to complete network scan.");
+                    })
+
+                    .finally(() => {
+                        scanningRef.current = false;
+                        setScanning(false);
+                    });
+            }, [
+                scanning,
+                refreshing
+            ]);
+
+
+            React.useEffect(() => {
+
+                setProtocolFilter("");
+
+            }, [transportFilter]);
+
+            React.useEffect(() => {
+
+                console.log("Protocol Filter =", protocolFilter);
+
+            }, [protocolFilter]);
+
+            React.useEffect(() => {
+
+                console.log("Filtered =", filteredPackets.length);
+
+            }, [filteredPackets]);
+
+            React.useEffect(() => {
+                const timer = setTimeout(() => {
+                    setDebouncedSearch(searchText);
+                }, CONFIG.SEARCH_DEBOUNCE);
+                return () => clearTimeout(timer);
+            }, [searchText, CONFIG.SEARCH_DEBOUNCE]);
+
+            React.useEffect(() => {
+
+                const interval = setInterval(() => {
+
+                    refreshDevices();
+
+                }, CONFIG.DEVICE_REFRESH_INTERVAL);
+
+                return () => clearInterval(interval);
+
+            }, [refreshDevices]);
+
+
+            React.useEffect(() => {
+
+                const timer = setInterval(() => {
+
+                    setCurrentDateTime(
+                        new Date().toLocaleString(
+                            "en-GB",
+                            { day: "2-digit", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: true }
+
+                        )
+                    );
+                }, CONFIG.CLOCK_REFRESH_INTERVAL);
+
+                return () => clearInterval(timer);
+
+            }, [CONFIG.CLOCK_REFRESH_INTERVAL]);
+
+            React.useEffect(() => {
+                refreshDevices();
+            }, [refreshDevices]);
+
+            React.useEffect(() => {
+
+                loadPackets();
+                loadServerInfo();
+                const interval = setInterval(loadPackets, CONFIG.PACKET_REFRESH_INTERVAL);
+                return () => clearInterval(interval);
+            }, [
+                loadPackets,
+                loadServerInfo
+            ]);
+
+            React.useEffect(() => {
+
+                const loadFooter = () => {
+
+                    loadServerInfo();
+                    loadVersion();
+                    loadPing();
+
+                };
+
+                loadFooter();
+                const timer = setInterval(loadFooter, CONFIG.FOOTER_REFRESH_INTERVAL);
+                return () => clearInterval(timer);
+
+            }, [loadServerInfo, loadVersion, loadPing]);
+
+            /*
+            React.useEffect(() => {
+      
+                if(packetTableRef.current){
+      
+                    packetTableRef.current.scrollTop =
+                        packetTableRef.current.scrollHeight;
+      
+                }
+      
+            },[filteredPackets]);
+            */
+
+            return (
+                <div className="main-container">
+
+                    <div className="header">
+                        <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                            {/*<img src="LnT_logo.png" className="logo" alt="Logo" onError={(e) => e.target.style.display = 'none'} />*/}
+
+                            <button className="logoButton" onClick={handleLogoClick} title="Dashboard">
+                                <img src="LnT_logo.png" className="logo" alt="Logo" onError={(e)=>e.target.style.display='none'} />
+                            </button>
+
+                            <h1 className="page-title">Network Monitoring Dashboard</h1>
+                        </div>
+                        <HeaderClock currentDateTime={currentDateTime} />
+                    </div>
+
+                    <hr className="divider" />
+
+                    <div>
+                        <h2 style={{ margin: 0, color: "#556B2F", padding: "10px 0" }}>Devices</h2>
+
+                        <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+                            <input className="search-box" value={searchText} onChange={(e) => setSearchText(e.target.value)}
+                                placeholder="Search for a Network Device" />
+                            {/*
+              <button
+                style={{ display:"flex", alignItems:"center", justifyContent:"center", width:"32px", height:"32px", padding: 0, cursor:"pointer", border:"2px solid #556B2F", borderRadius:"4px"}}>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="11" cy="11" r="8"></circle>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                </svg>
+              </button>
+              */}
+                            <button onClick={scanNetwork} disabled={scanning || refreshing} className="btn"> {scanning ? "Scanning..." : "Scan Network"} </button>
+                            <button onClick={refreshDevices} disabled={refreshing || scanning} className="btn"> {refreshing ? "Refreshing..." : "Refresh"} </button>
+                        </div>
+
+                        <div style={{ height: "20px" }}></div>
+                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "10px" }}>
+                            <div>
+                                <span className="strstyle">
+                                    Devices Found : {devices.length}
+                                </span>
+                                <span>{"  "}||{"  "}</span>
+                                <span className="strstyle">
+                                    Showing : {filteredDevices.length}
+                                </span>
+                                <span>{"  "}||{"  "}</span>
+                                <span className="strstyle">
+                                    Online : {"  "}
+                                </span>
+                                <span className="strstyle" style={{ color: "#008000" }}>
+                                    {deviceStatistics.online}
+                                </span>
+                                <span>{"  "}||{"  "}</span>
+                                <span className="strstyle">
+                                    Offline : {"  "}
+                                </span>
+                                <span className="strstyle" style={{ color: "#C00000" }}>
+                                    {deviceStatistics.offline}
+                                </span>
+                            </div>
+
+                            <div style={{ fontWeight: "bold", color: "#556B2F", minWidth: "250px", textAlign: "right" }}>
+                                Last Scan: {lastScanTime || "Never"}
+                            </div>
+                        </div>
+
+
+
+                        <div className="device-table-container">
+                            {filteredDevices.length === 0 && (
+
+                                <div style={{ paddingTop: "90px", textAlign: "center" }}>
+                                    <div style={{ fontWeight: "bold", fontSize: "18px", color: deviceStatus ? deviceStatus.color : "#556B2F" }}>
+                                        {
+                                            deviceStatus
+                                                ? deviceStatus.title
+                                                : "No Active Devices Detected"
+                                        }
+                                    </div>
+
+                                    <div style={{ marginTop: "10px", color: "#666" }}>
+                                        {
+                                            deviceStatus
+                                                ? deviceStatus.message
+                                                : ""
+                                        }
+                                    </div>
+                                </div>
+                            )}
+                            {filteredDevices.length > 0 && (
+                                <table className="device-table">
+                                    <thead className="table-header">
+                                        <tr>
+                                            <th>Sl.</th>
+                                            <th>Device Identifier</th>
+                                            <th>Hostname</th>
+                                            <th>Manufacturer</th>
+                                            <th>Model Name</th>
+                                            <th>OS</th>
+                                            <th>IP Address</th>
+                                            <th>MAC Address</th>
+                                            {/*
+                                            <th>Firmware Version</th>
+                                            <th>Last Boot</th>
+                                            */}
+                                            <th>Response</th>
+                                            <th>Currently Active</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+                                    <DeviceTable
+                                        sortedDevices={sortedDevices}
+                                        handleView={handleView}
+                                        scanning={scanning}
+                                        refreshing={refreshing}
+                                    />
+                                </table>
+                            )}
+                        </div>
+                    </div>
+                    <DeviceDetailsModal device={selectedDevice} onClose={() => setSelectedDevice(null)} />
+                    <div style={{ padding: "4px 0" }}>
+                        <hr className="divider" />
+                    </div>
+                    <div>
+                        <h2 style={{ margin: 0, color: "#556B2F", padding: "8px 0" }}>Live Packet Capture</h2>
+
+                        <div style={{ display: "flex", alignItems: "center", gap: "5px" }}>
+                            <input className="search-box" type="text" placeholder="Search Source / Destination / Protocol..." value={packetSearch}
+                                onChange={(e) => setPacketSearch(e.target.value)} />
+
+                            <div className="filter-group" style={{ marginLeft: "8px" }}>
+                                <label className="filter-label">Transport :</label>
+                                <select className="filter-dropdown" value={transportFilter} onChange={(e) => setTransportFilter(e.target.value)}>
+                                    <option value="">Select</option>
+                                    <option value="TCP">TCP</option>
+                                    <option value="UDP">UDP</option>
+                                    <option value="UNKNOWN">Unknown</option>
+                                </select>
+                            </div>
+                            <div className="filter-group">
+                                <label className="filter-label">Protocol :</label>
+                                <select className="filter-dropdown" value={protocolFilter} onChange={(e) => setProtocolFilter(e.target.value)} disabled={!transportFilter}>
+                                    <option value="">Select</option>
+                                    {protocolOptions.map(protocol => (<option key={protocol} value={protocol}>{protocol}</option>))}
+                                </select>
+                            </div>
+                            <button className="btn" onClick={loadTrafficAnalysis} style={{ marginLeft: "8px", minWidth: "170px" }}> 📊 Traffic Analysis </button>
+                            <button className="btn" onClick={loadRiskAnalysis} style={{ marginLeft: "8px", minWidth: "170px" }}> ⚠️ Risk Analysis </button>
+                        </div>
+                        <p />
+                        <div style={{
+                            display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: "10px", marginBottom: "10px",
+                            fontWeight: "bold", flexWrap: "wrap"
+                        }}>
+
+                            <div style={{ display: "flex", gap: "12px", alignItems: "center" }}>
+                                <span>Packets Captured : {filteredPacketCount}</span>
+                                <span>||</span>
+                                <span>Packets Showing : {filteredPacketCount}</span>
+                            </div>
+                            <div className="packet-summary-group">
+                                <span style={{ fontWeight: "bold" }}>Total : {packetSummary.total}</span>
+                                {
+                                    Object.entries(packetSummary.counts).map(([name, count]) =>
+                                        <span key={name} style={{ color: getProtocolColor(name), fontWeight: "bold" }}>{name} : {count}</span>)
+                                }
+                            </div>
+                        </div>
+                        <div ref={packetTableRef} className="packet-table-container">
+                            <PacketTable
+                                filteredPackets={filteredPackets}
+                                selectedPacket={selectedPacket}
+                                setSelectedPacket={setSelectedPacket}
+                                setSelectedWSPacket={setSelectedWSPacket}
+                                setPacketAIResult={setPacketAIResult}
+                                setPacketAIError={setPacketAIError}
+                                setPacketAILoading={setPacketAILoading}
+                            />
+                        </div>
+                    </div>
+                    <div style={{ marginTop: "15px", padding: "15px", border: "1px solid #ddd", borderRadius: "6px", background: "#fafafa" }}>
+                        <h3 style={{ marginTop: 0 }}> Packet Details </h3>
+                        {
+                            selectedWSPacket ?
+                                <div>
+                                    <p><b>Time :</b> {selectedWSPacket.time}</p>
+                                    <p><b>Interface :</b> {selectedWSPacket.interface}</p>
+                                    <p><b>Source :</b> {selectedWSPacket.source}</p>
+                                    <p><b>Destination :</b> {selectedWSPacket.destination}</p>
+                                    <p><b>Protocol :</b> {selectedWSPacket.protocol}</p>
+                                    <p><b>Length :</b> {selectedWSPacket.length} Bytes</p>
+                                </div>
+                                :
+                                <div style={{ color: "#888" }}> Click a packet to view details. </div>
+                        }
+                    </div>
+                    <hr />
+                    <PacketDetailsModal
+                        packet={selectedPacket} aiResult={packetAIResult} aiLoading={packetAILoading} aiError={packetAIError} onAnalyze={analyzePacket}
+                        onDeepAnalysis={deepAnalyzePacket} onShowArchitecture={() => { setShowPacketArchitecture(true); }} onClose={() => setSelectedPacket(null)} />
+                    <PacketArchitectureModal open={showPacketArchitecture} onClose={() => setShowPacketArchitecture(false)} />
+                    <TrafficAnalysisModal show={showTrafficAnalysis} analysis={trafficAnalysis} onClose={() => setShowTrafficAnalysis(false)} />
+                    <RiskAnalysisModal show={showRiskAnalysis} analysis={riskAnalysis} onClose={() => setShowRiskAnalysis(false)} />
+                    <DeepAnalysisModal style={{
+                        position: "fixed", top: "50%", left: `calc(20% + ${PACKET_DETAILS_WIDTH / 2 + MODAL_GAP}px)`,
+                        transform: "translateY(-90%)", width: `${DEEP_ANALYSIS_WIDTH}px`, height: "720px", background: "#FFFFFF", border: "1px solid #B5B5B5",
+                        borderRadius: "10px", boxShadow: "0 18px 45px rgba(0,0,0,0.45)", zIndex: 10001, padding: "20px", overflowY: "auto"
+                    }}
+                        open={showDeepAnalysis}
+                        packet={selectedDeepPacket}
+                        result={deepAnalysisResult}
+                        loading={deepAnalysisLoading}
+                        error={deepAnalysisError}
+                        onClose={() => {
+                            setShowDeepAnalysis(false);
+                            setSelectedDeepPacket(null);
+                        }}
+                        onShowArchitecture={() =>
+                            setShowDeepArchitecture(true)
+                        }
+                    />
+                    <DeepArchitectureModal open={showDeepArchitecture} onClose={() => setShowDeepArchitecture(false)} />
+                    <SystemArchitectureModal open={showSystemArchitecture} onClose={() => setShowSystemArchitecture(false)} />
+                    <FooterBar apiVersion={apiVersion} serverStatus={serverStatus} footerTime={footerTime} versionInfo={versionInfo} refreshInterval={CONFIG.FOOTER_REFRESH_INTERVAL} />
+                    <hr />
+                </div>
+
+            );
+        }
+
+        const container = document.querySelector(".js-container");
+        ReactDOM.createRoot(container).render(<DashUI />);
+
+    </script>
+</body>
+
+</html>
