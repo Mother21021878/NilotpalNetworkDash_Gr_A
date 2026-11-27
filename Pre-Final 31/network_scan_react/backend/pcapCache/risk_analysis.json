@@ -1,0 +1,135 @@
+{
+    "status": "SUCCESS",
+    "generated": "08-Aug-2026 15:35:54",
+    "generatedISO": "2026-08-08T15:35:54.405530",
+    "riskScore": 35,
+    "riskLevel": "MEDIUM",
+    "recommendations": [
+        "High ARP activity detected.",
+        "DNS traffic is unusually high."
+    ],
+    "recommendationCount": 2,
+    "totalPackets": 124090,
+    "packetRate": 689.69,
+    "throughput": 2.69,
+    "uploadDownloadRatio": {
+        "upload": 10.7,
+        "download": 89.3,
+        "uploadBytes": 6445602,
+        "downloadBytes": 53537864
+    },
+    "protocols": {
+        "DNS": 5915,
+        "OTHER": 7462,
+        "QUIC": 28503,
+        "STP": 4596,
+        "TCP": 44366,
+        "TLS": 10419,
+        "TCP.SEGMENTS": 4250,
+        "ARP": 2942,
+        "ICMPV6": 4826,
+        "SSDP": 2605,
+        "MAILSLOT": 27,
+        "TPLINK-SMARTHOME": 213,
+        "IEEE1905": 323,
+        "LLDP": 154,
+        "MDNS": 3910,
+        "_WS.MALFORMED": 461,
+        "STUN": 413,
+        "DTLS": 526,
+        "IGMP": 338,
+        "DHCPV6": 28,
+        "LLMNR": 1094,
+        "NBNS": 320,
+        "DHCP": 3,
+        "HTTP": 134,
+        "DATA-TEXT-LINES": 13,
+        "XML": 31,
+        "PORTMAP": 3,
+        "SNMP": 54,
+        "ICMP": 160,
+        "XMPP": 1
+    },
+    "topTalkers": [
+        {
+            "ip": "192.168.0.152",
+            "hostname": "-",
+            "packetCount": 18136,
+            "packets": 18136,
+            "bytes": 3733696,
+            "percentage": 14.62
+        },
+        {
+            "ip": "2409:4071:e9e:bcbf:1d5c:7f0f:3be3:6a20",
+            "hostname": "-",
+            "packetCount": 16182,
+            "packets": 16182,
+            "bytes": 7036717,
+            "percentage": 13.04
+        },
+        {
+            "ip": "Unknown",
+            "hostname": "-",
+            "packetCount": 8015,
+            "packets": 8015,
+            "bytes": 448315,
+            "percentage": 6.46
+        },
+        {
+            "ip": "192.168.0.1",
+            "hostname": "-",
+            "packetCount": 4852,
+            "packets": 4852,
+            "bytes": 1315826,
+            "percentage": 3.91
+        },
+        {
+            "ip": "2409:4071:e9e:bcbf:15c7:8da3:83ef:6d8b",
+            "hostname": "-",
+            "packetCount": 4191,
+            "packets": 4191,
+            "bytes": 4069400,
+            "percentage": 3.38
+        },
+        {
+            "ip": "2001:4860:482c:7700::",
+            "hostname": "-",
+            "packetCount": 3590,
+            "packets": 3590,
+            "bytes": 3692809,
+            "percentage": 2.89
+        },
+        {
+            "ip": "2001:4860:4802:34::9d",
+            "hostname": "-",
+            "packetCount": 3319,
+            "packets": 3319,
+            "bytes": 4085584,
+            "percentage": 2.67
+        },
+        {
+            "ip": "2a03:2880:f354:120:face:b00c:0:167",
+            "hostname": "-",
+            "packetCount": 3162,
+            "packets": 3162,
+            "bytes": 2163843,
+            "percentage": 2.55
+        },
+        {
+            "ip": "2a03:2880:f317:120:face:b00c:0:167",
+            "hostname": "-",
+            "packetCount": 2907,
+            "packets": 2907,
+            "bytes": 2676821,
+            "percentage": 2.34
+        },
+        {
+            "ip": "2001:4860:482d:7700::",
+            "hostname": "-",
+            "packetCount": 2542,
+            "packets": 2542,
+            "bytes": 2436153,
+            "percentage": 2.05
+        }
+    ]
+}
