@@ -1,0 +1,166 @@
+{
+    "analysisMode": "Historical",
+    "pcapFilesAnalysed": 1,
+    "oldestCapture": "Wi-Fi_20260710_113452.pcapng",
+    "newestCapture": "Wi-Fi_20260710_113452.pcapng",
+    "captureDuration": 179.86,
+    "peakTrafficPackets": 10914,
+    "totalPackets": 1441866,
+    "totalBytes": 618536993,
+    "protocols": {
+        "ARP": 338167,
+        "NBNS": 22810,
+        "TLS": 54096,
+        "TCP": 260114,
+        "SSDP": 50108,
+        "MDNS": 290048,
+        "OTHER": 174278,
+        "DNS": 15772,
+        "LLMNR": 42087,
+        "MAILSLOT": 6105,
+        "DB-LSP-DISC": 11068,
+        "TCP.SEGMENTS": 8590,
+        "DHCP": 2958,
+        "ICMPV6": 1092,
+        "XML": 7203,
+        "QUIC": 155332,
+        "HTTP": 426,
+        "STEAM_IHS_DISCOVERY": 88,
+        "ICMP": 489,
+        "IGMP": 400,
+        "DATA-TEXT-LINES": 23,
+        "MSDO": 514,
+        "XMPP": 3,
+        "DUPLICATE IP ADDRESS DETECTED FOR 10.20.0.57 (04:68:74:BA:5C:F7) - ALSO IN USE BY 9A:F1:FC:B7:94:87 (FRAME 2401)": 1,
+        "NTP": 2,
+        "WSP": 15,
+        "_WS.MALFORMED": 19,
+        "OCSP": 2,
+        "SNMP": 12,
+        "DHCPV6": 35,
+        "DUPLICATE IP ADDRESS DETECTED FOR 10.20.0.103 (80:38:FB:FE:2A:0E) - ALSO IN USE BY 58:6C:25:21:F6:EC (FRAME 767)": 6,
+        "MP2T": 1,
+        "DUPLICATE IP ADDRESS DETECTED FOR 10.20.0.195 (2C:DB:07:68:F6:64) - ALSO IN USE BY 28:7F:CF:F3:AB:B0 (FRAME 18950)": 2
+    },
+    "topTalkers": [
+        {
+            "ip": "Unknown",
+            "packets": 339037,
+            "bytes": 19297682
+        },
+        {
+            "ip": "10.20.0.90",
+            "packets": 224729,
+            "bytes": 69687907
+        },
+        {
+            "ip": "49.249.29.228",
+            "packets": 143327,
+            "bytes": 182373696
+        },
+        {
+            "ip": "57.144.211.32",
+            "packets": 21424,
+            "bytes": 15066374
+        },
+        {
+            "ip": "10.20.0.233",
+            "packets": 20398,
+            "bytes": 1651018
+        },
+        {
+            "ip": "92.223.76.253",
+            "packets": 16892,
+            "bytes": 24779389
+        },
+        {
+            "ip": "10.20.0.34",
+            "packets": 16568,
+            "bytes": 1386840
+        },
+        {
+            "ip": "fe80::a7a3:6962:64bd:8af1",
+            "packets": 15487,
+            "bytes": 1499771
+        },
+        {
+            "ip": "172.64.155.209",
+            "packets": 14969,
+            "bytes": 6910569
+        },
+        {
+            "ip": "172.217.136.39",
+            "packets": 11416,
+            "bytes": 14530141
+        }
+    ],
+    "topReceivers": [
+        {
+            "ip": "10.20.0.90",
+            "packets": 434397,
+            "bytes": 429311492
+        },
+        {
+            "ip": "Unknown",
+            "packets": 339037,
+            "bytes": 19297682
+        },
+        {
+            "ip": "224.0.0.251",
+            "packets": 172588,
+            "bytes": 38056100
+        },
+        {
+            "ip": "ff02::fb",
+            "packets": 118709,
+            "bytes": 33200397
+        },
+        {
+            "ip": "239.255.255.250",
+            "packets": 50513,
+            "bytes": 12894070
+        },
+        {
+            "ip": "10.20.7.255",
+            "packets": 36547,
+            "bytes": 4449190
+        },
+        {
+            "ip": "224.0.0.252",
+            "packets": 21043,
+            "bytes": 1542250
+        },
+        {
+            "ip": "ff02::1:3",
+            "packets": 20983,
+            "bytes": 1957925
+        },
+        {
+            "ip": "49.249.29.228",
+            "packets": 12327,
+            "bytes": 987445
+        },
+        {
+            "ip": "57.144.211.32",
+            "packets": 11554,
+            "bytes": 2391735
+        }
+    ],
+    "averagePacketSize": 428.98,
+    "largestPacket": 63414,
+    "smallestPacket": 42,
+    "packetRate": 8016.76,
+    "throughputMbps": 27.51,
+    "peakTrafficTime": "10-Jul-2026 04:32:01",
+    "uploadDownloadRatio": {
+        "upload": 33.8,
+        "download": 66.2,
+        "uploadBytes": 209269762,
+        "downloadBytes": 409267231
+    },
+    "analysisGeneratedAt": "10-Jul-2026 11:37:58",
+    "analysisExecutionTime": 5.54,
+    "processedFiles": 1,
+    "skippedFiles": 0,
+    "lastAnalysedFile": "Wi-Fi_20260710_113452.pcapng"
+}
