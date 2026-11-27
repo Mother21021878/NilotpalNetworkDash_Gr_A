@@ -1,0 +1,186 @@
+{
+    "analysisMode": "Historical",
+    "pcapFilesAnalysed": 1,
+    "oldestCapture": "Ethernet_20260804_103228.pcapng",
+    "newestCapture": "Ethernet_20260804_103228.pcapng",
+    "captureDuration": 179.25,
+    "peakTrafficPackets": 10914,
+    "totalPackets": 11594165,
+    "totalBytes": 8572462647,
+    "protocols": {
+        "ARP": 548222,
+        "NBNS": 39605,
+        "TLS": 778921,
+        "TCP": 3067437,
+        "SSDP": 221564,
+        "MDNS": 440270,
+        "OTHER": 2272404,
+        "DNS": 396361,
+        "LLMNR": 101064,
+        "MAILSLOT": 7702,
+        "DB-LSP-DISC": 11068,
+        "TCP.SEGMENTS": 172154,
+        "DHCP": 5428,
+        "ICMPV6": 270669,
+        "XML": 10157,
+        "QUIC": 2857557,
+        "HTTP": 4731,
+        "STEAM_IHS_DISCOVERY": 88,
+        "ICMP": 3250,
+        "IGMP": 24707,
+        "DATA-TEXT-LINES": 828,
+        "MSDO": 514,
+        "XMPP": 25,
+        "DUPLICATE IP ADDRESS DETECTED FOR 10.20.0.57 (04:68:74:BA:5C:F7) - ALSO IN USE BY 9A:F1:FC:B7:94:87 (FRAME 2401)": 1,
+        "NTP": 48,
+        "WSP": 15,
+        "_WS.MALFORMED": 14766,
+        "OCSP": 67,
+        "SNMP": 1456,
+        "DHCPV6": 2032,
+        "DUPLICATE IP ADDRESS DETECTED FOR 10.20.0.103 (80:38:FB:FE:2A:0E) - ALSO IN USE BY 58:6C:25:21:F6:EC (FRAME 767)": 6,
+        "MP2T": 6,
+        "DUPLICATE IP ADDRESS DETECTED FOR 10.20.0.195 (2C:DB:07:68:F6:64) - ALSO IN USE BY 28:7F:CF:F3:AB:B0 (FRAME 18950)": 2,
+        "STP": 290970,
+        "IEEE1905": 23832,
+        "LLDP": 9690,
+        "WLCCP": 648,
+        "BASICXID": 692,
+        "WLAN.TAGGED.ALL": 18,
+        "CERTIFICATE REVOCATION LIST": 12,
+        "STUN": 3218,
+        "DTLS": 339,
+        "RTCP": 10541,
+        "_WS.DISSECTOR_BUG": 7,
+        "PRP": 16,
+        "SMB": 3,
+        "NBSS": 65,
+        "DCERPC": 3,
+        "ELASTICSEARCH": 1,
+        "NAT-PMP": 8,
+        "TPLINK-SMARTHOME": 534,
+        "RTSP": 441,
+        "PORTMAP": 2
+    },
+    "topTalkers": [
+        {
+            "ip": "Unknown",
+            "packets": 875594,
+            "bytes": 49746034
+        },
+        {
+            "ip": "10.20.0.90",
+            "packets": 224729,
+            "bytes": 69687907
+        },
+        {
+            "ip": "2405:200:1608:1731::312c:7108",
+            "packets": 174230,
+            "bytes": 251698594
+        },
+        {
+            "ip": "49.249.29.228",
+            "packets": 143327,
+            "bytes": 182373696
+        },
+        {
+            "ip": "2405:204:5709:123b:10c:a1f6:390c:afdf",
+            "packets": 140846,
+            "bytes": 139549014
+        },
+        {
+            "ip": "23.193.56.34",
+            "packets": 70211,
+            "bytes": 99925498
+        },
+        {
+            "ip": "2a03:90c0:f1:2801::9999",
+            "packets": 61191,
+            "bytes": 86229733
+        },
+        {
+            "ip": "74.224.107.133",
+            "packets": 60172,
+            "bytes": 84407247
+        },
+        {
+            "ip": "49.44.80.208",
+            "packets": 54212,
+            "bytes": 70327521
+        },
+        {
+            "ip": "2405:200:1608:2934::c",
+            "packets": 54180,
+            "bytes": 69546424
+        }
+    ],
+    "topReceivers": [
+        {
+            "ip": "192.168.0.152",
+            "packets": 1956550,
+            "bytes": 1560972881
+        },
+        {
+            "ip": "Unknown",
+            "packets": 875594,
+            "bytes": 49746034
+        },
+        {
+            "ip": "10.20.0.90",
+            "packets": 434397,
+            "bytes": 429311492
+        },
+        {
+            "ip": "224.0.0.251",
+            "packets": 255602,
+            "bytes": 45692912
+        },
+        {
+            "ip": "239.255.255.250",
+            "packets": 205717,
+            "bytes": 80143889
+        },
+        {
+            "ip": "ff02::fb",
+            "packets": 185903,
+            "bytes": 40847814
+        },
+        {
+            "ip": "2409:4071:221d:5f5f:40f6:aaa5:7da6:b3d8",
+            "packets": 162176,
+            "bytes": 233831553
+        },
+        {
+            "ip": "2405:204:5709:123b:10c:a1f6:390c:afdf",
+            "packets": 142566,
+            "bytes": 122168965
+        },
+        {
+            "ip": "2a03:2880:f354:136:face:b00c:0:b1",
+            "packets": 115513,
+            "bytes": 116021027
+        },
+        {
+            "ip": "2409:4071:2203:b123:e0ad:e066:3968:b6f5",
+            "packets": 69920,
+            "bytes": 85904793
+        }
+    ],
+    "averagePacketSize": 739.38,
+    "largestPacket": 64464,
+    "smallestPacket": 42,
+    "packetRate": 64682.62,
+    "throughputMbps": 382.6,
+    "peakTrafficTime": "10-Jul-2026 04:32:01",
+    "uploadDownloadRatio": {
+        "upload": 29.9,
+        "download": 70.1,
+        "uploadBytes": 2561851814,
+        "downloadBytes": 6010610833
+    },
+    "analysisGeneratedAt": "04-Aug-2026 10:35:30",
+    "analysisExecutionTime": 1.54,
+    "processedFiles": 1,
+    "skippedFiles": 0,
+    "lastAnalysedFile": "Ethernet_20260804_103228.pcapng"
+}
