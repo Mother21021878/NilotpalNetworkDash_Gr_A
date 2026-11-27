@@ -1,0 +1,216 @@
+{
+    "analysisMode": "Historical",
+    "pcapFilesAnalysed": 1,
+    "oldestCapture": "Wi-Fi_20260807_181018.pcapng",
+    "newestCapture": "Wi-Fi_20260807_181018.pcapng",
+    "captureDuration": 178.89,
+    "peakTrafficPackets": 10914,
+    "totalPackets": 12731078,
+    "totalBytes": 9292383121,
+    "protocols": {
+        "ARP": 579211,
+        "NBNS": 42888,
+        "TLS": 912817,
+        "TCP": 3575864,
+        "SSDP": 246882,
+        "MDNS": 461589,
+        "OTHER": 2297660,
+        "DNS": 447775,
+        "LLMNR": 110861,
+        "MAILSLOT": 7913,
+        "DB-LSP-DISC": 11068,
+        "TCP.SEGMENTS": 207165,
+        "DHCP": 5518,
+        "ICMPV6": 311309,
+        "XML": 10687,
+        "QUIC": 3044413,
+        "HTTP": 5591,
+        "STEAM_IHS_DISCOVERY": 88,
+        "ICMP": 3835,
+        "IGMP": 28343,
+        "DATA-TEXT-LINES": 979,
+        "MSDO": 514,
+        "XMPP": 27,
+        "DUPLICATE IP ADDRESS DETECTED FOR 10.20.0.57 (04:68:74:BA:5C:F7) - ALSO IN USE BY 9A:F1:FC:B7:94:87 (FRAME 2401)": 1,
+        "NTP": 52,
+        "WSP": 15,
+        "_WS.MALFORMED": 18353,
+        "OCSP": 67,
+        "SNMP": 1779,
+        "DHCPV6": 2296,
+        "DUPLICATE IP ADDRESS DETECTED FOR 10.20.0.103 (80:38:FB:FE:2A:0E) - ALSO IN USE BY 58:6C:25:21:F6:EC (FRAME 767)": 6,
+        "MP2T": 6,
+        "DUPLICATE IP ADDRESS DETECTED FOR 10.20.0.195 (2C:DB:07:68:F6:64) - ALSO IN USE BY 28:7F:CF:F3:AB:B0 (FRAME 18950)": 2,
+        "STP": 339031,
+        "IEEE1905": 27444,
+        "LLDP": 11288,
+        "WLCCP": 659,
+        "BASICXID": 704,
+        "WLAN.TAGGED.ALL": 27,
+        "CERTIFICATE REVOCATION LIST": 14,
+        "STUN": 4052,
+        "DTLS": 646,
+        "RTCP": 10541,
+        "_WS.DISSECTOR_BUG": 10,
+        "PRP": 31,
+        "SMB": 3,
+        "NBSS": 65,
+        "DCERPC": 3,
+        "ELASTICSEARCH": 1,
+        "NAT-PMP": 8,
+        "TPLINK-SMARTHOME": 534,
+        "RTSP": 441,
+        "PORTMAP": 2
+    },
+    "topTalkers": [
+        {
+            "ip": "Unknown",
+            "hostname": "-",
+            "packetCount": 959900,
+            "packets": 959900,
+            "bytes": 54530303,
+            "percentage": 7.54
+        },
+        {
+            "ip": "10.20.0.90",
+            "hostname": "-",
+            "packetCount": 224729,
+            "packets": 224729,
+            "bytes": 69687907,
+            "percentage": 1.77
+        },
+        {
+            "ip": "2405:200:1608:1731::312c:7108",
+            "hostname": "-",
+            "packetCount": 176298,
+            "packets": 176298,
+            "bytes": 254254313,
+            "percentage": 1.38
+        },
+        {
+            "ip": "49.249.29.228",
+            "hostname": "-",
+            "packetCount": 143327,
+            "packets": 143327,
+            "bytes": 182373696,
+            "percentage": 1.13
+        },
+        {
+            "ip": "2405:204:5709:123b:10c:a1f6:390c:afdf",
+            "hostname": "-",
+            "packetCount": 140846,
+            "packets": 140846,
+            "bytes": 139549014,
+            "percentage": 1.11
+        },
+        {
+            "ip": "23.193.56.34",
+            "hostname": "-",
+            "packetCount": 70226,
+            "packets": 70226,
+            "bytes": 99935179,
+            "percentage": 0.55
+        },
+        {
+            "ip": "2a03:90c0:f1:2801::9999",
+            "hostname": "-",
+            "packetCount": 61267,
+            "packets": 61267,
+            "bytes": 86245368,
+            "percentage": 0.48
+        },
+        {
+            "ip": "74.224.107.134",
+            "hostname": "-",
+            "packetCount": 60267,
+            "packets": 60267,
+            "bytes": 84678593,
+            "percentage": 0.47
+        },
+        {
+            "ip": "74.224.107.133",
+            "hostname": "-",
+            "packetCount": 60172,
+            "packets": 60172,
+            "bytes": 84407247,
+            "percentage": 0.47
+        },
+        {
+            "ip": "49.44.80.208",
+            "hostname": "-",
+            "packetCount": 54212,
+            "packets": 54212,
+            "bytes": 70327521,
+            "percentage": 0.43
+        }
+    ],
+    "topReceivers": [
+        {
+            "ip": "192.168.0.152",
+            "packets": 2321318,
+            "bytes": 1809352463
+        },
+        {
+            "ip": "Unknown",
+            "packets": 959900,
+            "bytes": 54530303
+        },
+        {
+            "ip": "10.20.0.90",
+            "packets": 434519,
+            "bytes": 429322716
+        },
+        {
+            "ip": "224.0.0.251",
+            "packets": 266607,
+            "bytes": 46522053
+        },
+        {
+            "ip": "239.255.255.250",
+            "packets": 229007,
+            "bytes": 90180334
+        },
+        {
+            "ip": "ff02::fb",
+            "packets": 196217,
+            "bytes": 41826289
+        },
+        {
+            "ip": "2409:4071:221d:5f5f:40f6:aaa5:7da6:b3d8",
+            "packets": 162176,
+            "bytes": 233831553
+        },
+        {
+            "ip": "2405:204:5709:123b:10c:a1f6:390c:afdf",
+            "packets": 142566,
+            "bytes": 122168965
+        },
+        {
+            "ip": "2a03:2880:f354:136:face:b00c:0:b1",
+            "packets": 115513,
+            "bytes": 116021027
+        },
+        {
+            "ip": "2409:4071:2203:b123:e0ad:e066:3968:b6f5",
+            "packets": 69920,
+            "bytes": 85904793
+        }
+    ],
+    "averagePacketSize": 729.9,
+    "largestPacket": 64464,
+    "smallestPacket": 42,
+    "packetRate": 71165.88,
+    "throughputMbps": 415.55,
+    "peakTrafficTime": "10-Jul-2026 04:32:01",
+    "uploadDownloadRatio": {
+        "upload": 30.1,
+        "download": 69.9,
+        "uploadBytes": 2795774368,
+        "downloadBytes": 6496608753
+    },
+    "analysisGeneratedAt": "07-Aug-2026 18:13:20",
+    "analysisExecutionTime": 1.17,
+    "processedFiles": 1,
+    "skippedFiles": 0,
+    "lastAnalysedFile": "Wi-Fi_20260807_181018.pcapng"
+}
