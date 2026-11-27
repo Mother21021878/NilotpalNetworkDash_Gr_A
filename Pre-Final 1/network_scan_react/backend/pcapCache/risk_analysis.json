@@ -1,0 +1,100 @@
+{
+    "status": "SUCCESS",
+    "generated": "10-Jul-2026 06:07:28",
+    "generatedISO": "2026-07-10T06:07:28.555687",
+    "riskScore": 35,
+    "riskLevel": "MEDIUM",
+    "recommendations": [
+        "High ARP activity detected.",
+        "DNS traffic is unusually high."
+    ],
+    "recommendationCount": 2,
+    "totalPackets": 508200,
+    "packetRate": 2824.59,
+    "throughput": 7.39,
+    "uploadDownloadRatio": {
+        "upload": 43.0,
+        "download": 57.0,
+        "uploadBytes": 71448013,
+        "downloadBytes": 94780576
+    },
+    "protocols": {
+        "ARP": 140810,
+        "NBNS": 9624,
+        "TLS": 21923,
+        "TCP": 141845,
+        "SSDP": 20776,
+        "MDNS": 98233,
+        "OTHER": 7364,
+        "DNS": 5043,
+        "LLMNR": 19208,
+        "MAILSLOT": 3006,
+        "DB-LSP-DISC": 4911,
+        "TCP.SEGMENTS": 2893,
+        "DHCP": 832,
+        "ICMPV6": 373,
+        "XML": 2956,
+        "QUIC": 27293,
+        "HTTP": 210,
+        "STEAM_IHS_DISCOVERY": 58,
+        "ICMP": 228,
+        "IGMP": 83,
+        "DATA-TEXT-LINES": 12,
+        "MSDO": 514,
+        "XMPP": 2,
+        "DUPLICATE IP ADDRESS DETECTED FOR 10.20.0.57 (04:68:74:BA:5C:F7) - ALSO IN USE BY 9A:F1:FC:B7:94:87 (FRAME 2401)": 1,
+        "NTP": 2
+    },
+    "topTalkers": [
+        {
+            "ip": "Unknown",
+            "packets": 141228,
+            "bytes": 8073694
+        },
+        {
+            "ip": "10.20.0.90",
+            "packets": 90981,
+            "bytes": 31361455
+        },
+        {
+            "ip": "92.223.76.253",
+            "packets": 16892,
+            "bytes": 24779389
+        },
+        {
+            "ip": "57.144.211.32",
+            "packets": 14113,
+            "bytes": 12212046
+        },
+        {
+            "ip": "10.20.0.233",
+            "packets": 11563,
+            "bytes": 947364
+        },
+        {
+            "ip": "172.64.155.209",
+            "packets": 11057,
+            "bytes": 5679389
+        },
+        {
+            "ip": "10.20.0.34",
+            "packets": 8959,
+            "bytes": 749058
+        },
+        {
+            "ip": "fe80::a7a3:6962:64bd:8af1",
+            "packets": 8768,
+            "bytes": 859882
+        },
+        {
+            "ip": "49.249.29.228",
+            "packets": 7948,
+            "bytes": 10082732
+        },
+        {
+            "ip": "fe80::e998:9210:c086:ee3f",
+            "packets": 5888,
+            "bytes": 583080
+        }
+    ]
+}
