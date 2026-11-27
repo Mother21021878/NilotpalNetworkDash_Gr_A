@@ -1,0 +1,610 @@
+from datetime import datetime
+
+
+def analyze_device(device):
+
+    score = device.get("deviceRiskScore", 0)
+    reasons = [
+        reason.get("text", "")
+        for reason in device.get("deviceRiskReasons", [])
+    ]
+    recommendations = [
+        {
+            "icon": reason.get("icon", "💡"),
+            "text": reason.get("recommendation", "")
+        }
+        for reason in device.get("deviceRiskReasons", [])
+        if reason.get("recommendation")
+    ]
+
+    # Attack Surface
+    attack_surface = []
+
+    if device.get("httpBannerDetected"):
+        attack_surface.append("🌐 HTTP")
+
+    if device.get("httpScheme") == "HTTPS":
+        attack_surface.append("🔒 HTTPS")
+
+    if device.get("snmpEnabled"):
+        attack_surface.append("📡 SNMP")
+
+    if device.get("sshBannerDetected"):
+        attack_surface.append("🔑 SSH")
+
+    open_ports = str(device.get("openPorts", "")).upper()
+
+    ports = {
+        port.strip()
+        for port in str(device.get("openPorts", "")).split(",")
+        if port.strip()
+    }
+
+    if "21" in ports:
+        attack_surface.append("📁 FTP")
+
+    if "23" in ports:
+        attack_surface.append("⚠️ Telnet")
+
+    if "1900" in open_ports or "UPNP" in str(device.get("discoverySource", "")).upper():
+        attack_surface.append("📺 UPnP")
+
+    # Risk Score
+    risk = device.get("deviceRiskLevel", "Low")
+
+    # Discovery Protocols
+    discovery = device.get("discoverySource", "")
+
+    if discovery:
+        reasons.append(
+            f"Device discovered using {discovery}."
+        )
+
+
+    # Default Message
+    if not reasons:
+        reasons.append(
+            "No significant security findings detected."
+        )
+
+    if not recommendations:
+        recommendations.append(
+            "Continue periodic security monitoring."
+        )
+
+
+    # Final Result
+
+    hostname = device.get("hostname") or device.get("ip") or "Unknown Device"
+
+    top_findings = ", ".join(reasons[:3])
+
+    if top_findings:
+        summary = (
+            f"{hostname} is classified as a {risk} risk device "
+            f"(Score: {score}/100). "
+            f"Primary findings: {top_findings}."
+        )
+    else:
+        summary = (
+            f"{hostname} is classified as a {risk} risk device "
+            f"(Score: {score}/100). "
+            f"No significant security findings were detected."
+        )
+
+    confidence = min(
+        95,
+        70 + len(reasons) * 5
+    )
+
+    # Device Security Grade
+    if score >= 80:
+        security_grade = "F"
+    elif score >= 60:
+        security_grade = "C"
+    elif score >= 40:
+        security_grade = "B"
+    elif score >= 20:
+        security_grade = "A"
+    else:
+        security_grade = "A+"
+
+    now = datetime.now()
+
+    analysis_time = now.strftime("%H:%M:%S")
+
+    analysis_date = now.strftime("%d-%b-%Y %H:%M:%S")
+
+    # AI Security Timeline
+
+    security_timeline = [
+
+        {
+            "icon": "🛰️",
+            "event": "Device Discovered",
+            "time": analysis_date
+        },
+
+        {
+            "icon": "🧠",
+            "event": "AI Risk Analysis Completed",
+            "time": analysis_date
+        },
+
+        {
+            "icon": "🛡️",
+            "event": "Security Assessment Generated",
+            "time": analysis_date
+        },
+
+        {
+            "icon": "📅",
+            "event": "Next Recommended Review",
+            "time": "Next Network Scan"
+        }
+
+    ]
+
+    # Executive Security Summary
+    if score >= 80:
+        executive_summary = (
+            "Immediate action required. This device has multiple high-risk "
+            "security findings and should be reviewed without delay."
+        )
+    elif score >= 60:
+        executive_summary = (
+            "High-risk configuration detected. Review exposed services and "
+            "strengthen device security."
+        )
+    elif score >= 40:
+        executive_summary = (
+            "Moderate security posture. Some improvements are recommended."
+        )
+    else:
+        executive_summary = (
+            "Good security posture. Continue routine monitoring and maintenance."
+        )
+
+
+    # AI Risk Indicators
+    risk_indicators = []
+
+    if device.get("httpBannerDetected"):
+        risk_indicators.append("🌐 HTTP Interface")
+
+    if device.get("snmpEnabled"):
+        risk_indicators.append("📡 SNMP Enabled")
+
+    if device.get("sshBannerDetected"):
+        risk_indicators.append("🔑 SSH Enabled")
+
+    if "UPNP" in str(device.get("discoverySource", "")).upper():
+        risk_indicators.append("📺 UPnP Available")
+
+    if not device.get("operatingSystem"):
+        risk_indicators.append("⚠️ Unknown Operating System")
+
+    # Security Posture
+    if score >= 80:
+        security_posture = "🔴 Critical - Immediate remediation required."
+    elif score >= 60:
+        security_posture = "🟠 High - Review exposed services and harden the device."
+    elif score >= 40:
+        security_posture = "🟡 Moderate - Improve security configuration."
+    else:
+        security_posture = "🟢 Healthy - Continue routine monitoring."
+
+    # AI Device Fingerprinting
+    fingerprint = "Unknown Network Device"
+
+    if device.get("category", "").lower() == "gateway":
+        fingerprint = "Internet Gateway"
+
+    elif "router" in str(device.get("deviceType", "")).lower():
+        fingerprint = "Residential WiFi Router"
+
+    elif "switch" in str(device.get("deviceType", "")).lower():
+        fingerprint = "Managed Ethernet Switch"
+
+    elif "access point" in str(device.get("deviceType", "")).lower():
+        fingerprint = "Wireless Access Point"
+
+    elif "printer" in str(device.get("deviceType", "")).lower():
+        fingerprint = "Network Printer"
+
+    elif "camera" in str(device.get("deviceType", "")).lower():
+        fingerprint = "IP Surveillance Camera"
+
+    elif "android" in str(device.get("operatingSystem", "")).lower():
+        fingerprint = "Android Smart Device"
+
+    elif "windows" in str(device.get("operatingSystem", "")).lower():
+        fingerprint = "Windows Computer"
+
+
+    # AI Network Role Detection
+
+    network_role = "Unknown Endpoint"
+
+    category = str(device.get("category", "")).lower()
+    device_type = str(device.get("deviceType", "")).lower()
+    connection = str(device.get("connectionType", "")).lower()
+    discovery = str(device.get("discoverySource", "")).lower()
+
+    if category == "gateway":
+        network_role = "Internet Gateway"
+
+    elif "router" in device_type:
+        network_role = "Network Router"
+
+    elif "switch" in device_type:
+        network_role = "Layer-2 Switch"
+
+    elif "access point" in device_type:
+        network_role = "Wireless Access Point"
+
+    elif "printer" in device_type:
+        network_role = "Network Printer"
+
+    elif "camera" in device_type:
+        network_role = "IP Surveillance Camera"
+
+    elif "windows" in str(device.get("operatingSystem", "")).lower():
+        network_role = "Client Workstation"
+
+    elif "android" in str(device.get("operatingSystem", "")).lower():
+        network_role = "Mobile Endpoint"
+
+    elif connection == "wireless":
+        network_role = "Wireless Endpoint"
+
+    elif connection == "wired":
+        network_role = "Wired Endpoint"
+
+    elif "upnp" in discovery:
+        network_role = "UPnP Network Device"
+
+    elif "mdns" in discovery:
+        network_role = "mDNS Service Device"
+
+    elif "netbios" in discovery:
+        network_role = "NetBIOS Host"
+
+
+    # AI Threat Prediction
+
+    threat_prediction = []
+
+    if score >= 80:
+        threat_prediction.append({
+            "severity": "Critical",
+            "prediction": "High probability of device compromise if not remediated."
+        })
+
+    elif score >= 60:
+        threat_prediction.append({
+            "severity": "High",
+            "prediction": "Device may become vulnerable to targeted attacks."
+        })
+
+    elif score >= 40:
+        threat_prediction.append({
+            "severity": "Medium",
+            "prediction": "Security posture may degrade if configuration is not improved."
+        })
+
+    else:
+        threat_prediction.append({
+            "severity": "Low",
+            "prediction": "No immediate threat predicted. Continue routine monitoring."
+        })
+
+    if device.get("httpBannerDetected"):
+        threat_prediction.append({
+            "severity": "Medium",
+            "prediction": "Web management interface could be targeted for credential attacks."
+        })
+
+    if device.get("snmpEnabled"):
+        threat_prediction.append({
+            "severity": "Medium",
+            "prediction": "SNMP exposure may reveal sensitive network information."
+        })
+
+    if device.get("sshBannerDetected"):
+        threat_prediction.append({
+            "severity": "Low",
+            "prediction": "SSH service should be protected using strong authentication."
+        })
+
+    if "23" in ports:
+        threat_prediction.append({
+            "severity": "Critical",
+            "prediction": "Telnet service significantly increases future compromise risk."
+        })
+
+    if "21" in ports:
+        threat_prediction.append({
+            "severity": "High",
+            "prediction": "FTP service may expose credentials unless secured."
+        })
+
+
+    # AI Risk Prioritization
+
+    risk_prioritization = []
+
+    if score >= 80:
+        risk_prioritization.append({
+            "priority": 1,
+            "severity": "Critical",
+            "title": "Immediate Security Remediation",
+            "reason": "Device has a critical risk score.",
+            "action": "Isolate the device and investigate immediately."
+        })
+
+    if "23" in ports:
+        risk_prioritization.append({
+            "priority": 2,
+            "severity": "Critical",
+            "title": "Disable Telnet",
+            "reason": "Telnet transmits credentials in plain text.",
+            "action": "Disable Telnet and migrate to SSH."
+        })
+
+    if device.get("httpBannerDetected"):
+        risk_prioritization.append({
+            "priority": 3,
+            "severity": "High",
+            "title": "Secure Web Interface",
+            "reason": "HTTP management interface detected.",
+            "action": "Redirect management traffic to HTTPS."
+        })
+
+    if device.get("snmpEnabled"):
+        risk_prioritization.append({
+            "priority": 4,
+            "severity": "High",
+            "title": "Review SNMP Configuration",
+            "reason": "SNMP service is exposed.",
+            "action": "Use SNMPv3 and restrict access."
+        })
+
+    if "21" in ports:
+        risk_prioritization.append({
+            "priority": 5,
+            "severity": "Medium",
+            "title": "Secure FTP Service",
+            "reason": "FTP may expose credentials.",
+            "action": "Replace FTP with SFTP or FTPS."
+        })
+
+    if device.get("sshBannerDetected"):
+        risk_prioritization.append({
+            "priority": 6,
+            "severity": "Low",
+            "title": "Harden SSH",
+            "reason": "SSH service is available.",
+            "action": "Allow key-based authentication only."
+        })
+
+    if not risk_prioritization:
+        risk_prioritization.append({
+            "priority": 1,
+            "severity": "Low",
+            "title": "Routine Monitoring",
+            "reason": "No significant security issues detected.",
+            "action": "Continue periodic security monitoring."
+        })
+
+    risk_prioritization.sort(key=lambda x: x["priority"])
+
+
+    # AI Security Score Breakdown
+
+    security_score_breakdown = []
+
+    if device.get("httpBannerDetected"):
+        security_score_breakdown.append({
+            "factor": "HTTP Management Interface",
+            "impact": +15,
+            "severity": "High",
+            "description": "Web management interface increases the attack surface."
+        })
+
+    if device.get("snmpEnabled"):
+        security_score_breakdown.append({
+            "factor": "SNMP Enabled",
+            "impact": +15,
+            "severity": "High",
+            "description": "SNMP may expose sensitive management information."
+        })
+
+    if device.get("sshBannerDetected"):
+        security_score_breakdown.append({
+            "factor": "SSH Remote Access",
+            "impact": +5,
+            "severity": "Low",
+            "description": "Remote administration detected."
+        })
+
+    if "23" in ports:
+        security_score_breakdown.append({
+            "factor": "Telnet Service",
+            "impact": +25,
+            "severity": "Critical",
+            "description": "Telnet transmits credentials without encryption."
+        })
+
+    if "21" in ports:
+        security_score_breakdown.append({
+            "factor": "FTP Service",
+            "impact": +15,
+            "severity": "High",
+            "description": "FTP may expose usernames and passwords."
+        })
+
+    if "1900" in open_ports:
+        security_score_breakdown.append({
+            "factor": "UPnP Service",
+            "impact": +10,
+            "severity": "Medium",
+            "description": "UPnP automatically exposes network services."
+        })
+
+    if not device.get("operatingSystem"):
+        security_score_breakdown.append({
+            "factor": "Unknown Operating System",
+            "impact": +10,
+            "severity": "Medium",
+            "description": "Operating system could not be identified."
+        })
+
+    if not security_score_breakdown:
+        security_score_breakdown.append({
+            "factor": "No Significant Security Findings",
+            "impact": 0,
+            "severity": "Low",
+            "description": "No services or configurations were identified that contributed to the current security risk score."
+        })
+
+    security_score_breakdown.sort(
+        key=lambda x: x["impact"],
+        reverse=True
+    )
+
+
+    # AI Confidence Explanation
+
+    confidence_explanation = []
+
+    if device.get("manufacturer"):
+        confidence_explanation.append({
+            "factor": "Manufacturer Identified",
+            "status": "✔",
+            "impact": "+5%"
+        })
+
+    if device.get("deviceType"):
+        confidence_explanation.append({
+            "factor": "Device Type Identified",
+            "status": "✔",
+            "impact": "+5%"
+        })
+
+    if device.get("operatingSystem"):
+        confidence_explanation.append({
+            "factor": "Operating System Identified",
+            "status": "✔",
+            "impact": "+5%"
+        })
+    else:
+        confidence_explanation.append({
+            "factor": "Operating System Unknown",
+            "status": "✖",
+            "impact": "-5%"
+        })
+
+    if device.get("httpBannerDetected"):
+        confidence_explanation.append({
+            "factor": "HTTP Banner Collected",
+            "status": "✔",
+            "impact": "+5%"
+        })
+
+    if device.get("sshBannerDetected"):
+        confidence_explanation.append({
+            "factor": "SSH Banner Collected",
+            "status": "✔",
+            "impact": "+5%"
+        })
+
+    if device.get("snmpEnabled"):
+        confidence_explanation.append({
+            "factor": "SNMP Information Available",
+            "status": "✔",
+            "impact": "+5%"
+        })
+
+    if device.get("lldpSystemName"):
+        confidence_explanation.append({
+            "factor": "LLDP Information Available",
+            "status": "✔",
+            "impact": "+5%"
+        })
+
+    if device.get("cdpDeviceId"):
+        confidence_explanation.append({
+            "factor": "CDP Information Available",
+            "status": "✔",
+            "impact": "+5%"
+        })
+
+    confidence_summary = (
+        f"AI confidence is {confidence}% because the analysis is based on "
+        f"{len(confidence_explanation)} verified network attributes collected "
+        f"during discovery and protocol analysis."
+    )
+
+    return {
+
+        "ai": summary,
+
+        "executiveSummary": executive_summary,
+
+        "aiModel": "Rule-Based AI Engine",
+
+        "deviceType": device.get("deviceType", "-"),
+
+        "fingerprint": fingerprint,
+
+        "networkRole": network_role,
+
+        "category": device.get("category", "-"),
+
+        "riskScore": score,
+
+        "riskLevel": risk,
+
+        "riskCategory": "Network Device Security",
+
+        "securityGrade": security_grade,
+
+        "attackSurface": attack_surface,
+
+        "riskIndicators": risk_indicators,
+
+        "securityPosture": security_posture,
+
+        "confidence": confidence,
+
+        "confidenceExplanation": confidence_explanation,
+
+        "confidenceSummary": confidence_summary,
+
+        "analysisTime": analysis_time,
+
+        "analyzedAt": analysis_date,
+
+        "securityTimeline": security_timeline,
+
+        "threatPrediction": threat_prediction,
+
+        "riskPrioritization": risk_prioritization,
+
+        "securityScoreBreakdown": security_score_breakdown,
+
+        "operatingSystem": device.get("operatingSystem", "-"),
+
+        "manufacturer": device.get("manufacturer", "-"),
+
+        "model": device.get("model", "-"),
+
+        "ip": device.get("ip", ""),
+
+        "mac": device.get("mac", ""),
+
+        "reasons": reasons,
+
+        "recommendations": recommendations
+    }
